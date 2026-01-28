@@ -1,8 +1,8 @@
 {
-	"name": "@type32/codemirror-rich-obsidian-editor",
-	"version": "0.1.10",
+	"name": "@type32/yaml-editor-form",
+	"version": "0.1.1",
 	"description": "OFM Editor Component for Nuxt.",
-	"repository": "https://github.com/Type-32/codemirror-rich-obsidian",
+	"repository": "https://github.com/CTRL-Neo-Studios/yaml-editor-form",
 	"license": "MIT",
 	"type": "module",
 	"private": false,

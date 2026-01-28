@@ -3,7 +3,7 @@
   "configVersion": 1,
   "workspaces": {
     "": {
-      "name": "@type32/codemirror-rich-obsidian-editor",
+      "name": "@type32/yaml-editor-form",
       "dependencies": {
         "@nuxt/image": "2.0.0",
         "@nuxt/kit": "^4.2.2",

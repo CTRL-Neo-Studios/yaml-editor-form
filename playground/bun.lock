@@ -3,7 +3,7 @@
   "configVersion": 1,
   "workspaces": {
     "": {
-      "name": "codemirror-rich-obsidian",
+      "name": "yaml-editor-form",
       "dependencies": {
         "@iconify-json/lucide": "^1.2.86",
         "@iconify-json/simple-icons": "^1.2.67",
