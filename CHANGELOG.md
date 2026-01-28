@@ -1,6 +1,19 @@
 # Changelog
 
 
+## v0.1.4
+
+[compare changes](https://github.com/CTRL-Neo-Studios/yaml-editor-form/compare/v0.1.3...v0.1.4)
+
+### 🚀 Enhancements
+
+- **size:** Added size parameter ([5eb4e8b](https://github.com/CTRL-Neo-Studios/yaml-editor-form/commit/5eb4e8b))
+- **base type:** Added base types for mostly listings and type conversion ([ba87393](https://github.com/CTRL-Neo-Studios/yaml-editor-form/commit/ba87393))
+
+### ❤️ Contributors
+
+- Type-32 ([@Type-32](https://github.com/Type-32))
+
 ## v0.1.3
 
 [compare changes](https://github.com/CTRL-Neo-Studios/yaml-editor-form/compare/v0.1.2...v0.1.3)
