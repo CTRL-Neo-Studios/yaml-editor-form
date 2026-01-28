@@ -1,0 +1,68 @@
+{
+	"name": "@type32/yaml-editor-form",
+	"version": "1.0.0",
+	"description": "A powerful, schema-driven YAML/frontmatter editor for Nuxt v4 with Nuxt UI components. Supports custom field types, nested structures, and extensible type system.",
+	"repository": "https://github.com/CTRL-Neo-Studios/yaml-editor-form",
+	"license": "MIT",
+	"type": "module",
+	"exports": {
+		".": {
+			"types": "./dist/types.d.mts",
+			"import": "./dist/module.mjs"
+		}
+	},
+	"main": "./dist/module.mjs",
+	"typesVersions": {
+		"*": {
+			".": [
+				"./dist/types.d.mts"
+			]
+		}
+	},
+	"files": [
+		"dist"
+	],
+	"workspaces": [
+		"playground"
+	],
+	"scripts": {
+		"prepack": "bunx nuxt-module-build build",
+		"dev": "bun run dev:prepare && bunx nuxi dev playground",
+		"dev:build": "bunx nuxi build playground",
+		"dev:prepare": "bunx nuxt-module-build build --stub && bunx nuxt-module-build prepare && bunx nuxi prepare playground",
+		"release": "bun run prepack && bunx changelogen --release && bun publish && git push --follow-tags",
+		"lint": "bunx eslint .",
+		"test": "bunx vitest run",
+		"test:watch": "bunx vitest watch",
+		"test:types": "bunx vue-tsc --noEmit && cd playground && bunx vue-tsc --noEmit"
+	},
+	"dependencies": {
+		"@iconify-json/lucide": "^1.2.87",
+		"@iconify-json/simple-icons": "^1.2.68",
+		"@internationalized/date": "^3.10.1",
+		"@nuxt/icon": "2.2.1",
+		"@nuxt/kit": "^4.3.0",
+		"@nuxt/ui": "4.4.0",
+		"@tiptap/extension-collaboration": "^3.17.1",
+		"@tiptap/extension-node-range": "^3.17.1",
+		"@tiptap/y-tiptap": "^3.0.2",
+		"tailwindcss": "^4.1.18",
+		"yaml": "^2.8.2",
+		"yjs": "^13.6.29"
+	},
+	"devDependencies": {
+		"@nuxt/devtools": "^3.1.1",
+		"@nuxt/eslint-config": "^1.13.0",
+		"@nuxt/hints": "1.0.0-alpha.6",
+		"@nuxt/image": "2.0.0",
+		"@nuxt/module-builder": "^1.0.2",
+		"@nuxt/schema": "^4.3.0",
+		"@nuxt/test-utils": "^3.23.0",
+		"@types/node": "^25.0.10",
+		"changelogen": "^0.6.2",
+		"nuxt": "^4.3.0",
+		"typescript": "~5.9.3",
+		"vitest": "^4.0.18",
+		"vue-tsc": "^3.2.4"
+	}
+}
