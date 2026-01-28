@@ -19,6 +19,7 @@
 import type {YamlFieldType, YamlFormData} from "../types/types";
 import {useYamlFieldTypes} from "../composables/useYamlFieldTypes";
 import YamlFormField from "../components/YamlFormField.vue";
+import {ref, watch, computed} from 'vue';
 
 const data = defineModel<YamlFormData>({ required: true })
 

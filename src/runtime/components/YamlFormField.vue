@@ -22,6 +22,7 @@ import YamlCollapsible from "../components/YamlCollapsible.vue";
 import type {YamlFieldType} from "../types/types";
 import YamlFieldInput from "../components/YamlFieldInput.vue";
 import {useYamlFieldTypes} from "../composables/useYamlFieldTypes";
+import {ref, watch, computed} from 'vue';
 
 type YamlValue = string | number | boolean | null | Date | YamlValue[] | { [key: string]: YamlValue }
 
