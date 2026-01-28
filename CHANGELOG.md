@@ -1,6 +1,18 @@
 # Changelog
 
 
+## v0.1.10
+
+[compare changes](https://github.com/Type-32/codemirror-rich-obsidian/compare/v0.1.9...v0.1.10)
+
+### 🏡 Chore
+
+- Accidentally uploaded the wrong readme ([4ab91ba](https://github.com/Type-32/codemirror-rich-obsidian/commit/4ab91ba))
+
+### ❤️ Contributors
+
+- Type-32 ([@Type-32](https://github.com/Type-32))
+
 ## v0.1.9
 
 
