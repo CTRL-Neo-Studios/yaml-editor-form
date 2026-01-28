@@ -65,41 +65,43 @@ const addFieldOptions = computed(() => {
 </script>
 
 <template>
-    <div class="space-y-4">
-        <div class="space-y-3">
-            <YamlFormField
-                v-for="(value, key) in data"
-                :key="String(key)"
-                v-model="data[key]"
-                :field-key="String(key)"
-                :readonly="readonly"
-                :field-types="fieldTypes"
-                @remove="removeField(String(key))"
-                @update:field-key="(newKey: string) => {
+	<ClientOnly>
+		<div class="space-y-4">
+			<div class="space-y-3">
+				<YamlFormField
+					v-for="(value, key) in data"
+					:key="String(key)"
+					v-model="data[key]"
+					:field-key="String(key)"
+					:readonly="readonly"
+					:field-types="fieldTypes"
+					@remove="removeField(String(key))"
+					@update:field-key="(newKey: string) => {
                     if (newKey !== key) {
                         data[newKey] = data[key]
                         delete data[key]
                     }
                 }"
-            >
-                <!-- Forward all slots to YamlFormField for custom field components -->
-                <template v-for="(_, name) in $slots" #[name]="slotProps">
-                    <slot :name="name" v-bind="slotProps" />
-                </template>
-            </YamlFormField>
-        </div>
+				>
+					<!-- Forward all slots to YamlFormField for custom field components -->
+					<template v-for="(_, name) in $slots" #[name]="slotProps">
+						<slot :name="name" v-bind="slotProps" />
+					</template>
+				</YamlFormField>
+			</div>
 
-        <UDropdownMenu
-            v-if="!readonly"
-            :items="[addFieldOptions]"
-            size="sm"
-        >
-            <UButton
-                icon="i-lucide-plus"
-                label="Add Field"
-                variant="ghost"
-                size="sm"
-            />
-        </UDropdownMenu>
-    </div>
+			<UDropdownMenu
+				v-if="!readonly"
+				:items="[addFieldOptions]"
+				size="sm"
+			>
+				<UButton
+					icon="i-lucide-plus"
+					label="Add Field"
+					variant="ghost"
+					size="sm"
+				/>
+			</UDropdownMenu>
+		</div>
+	</ClientOnly>
 </template>

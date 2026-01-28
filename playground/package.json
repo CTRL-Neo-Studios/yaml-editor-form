@@ -1,24 +1,35 @@
 {
-	"private": true,
-	"name": "my-module-playground",
-	"type": "module",
-	"scripts": {
-		"dev": "nuxt dev",
-		"build": "nuxt build",
-		"generate": "nuxt generate"
-	},
-	"dependencies": {
-		"@iconify-json/lucide": "^1.2.87",
-		"@iconify-json/simple-icons": "^1.2.68",
-		"@internationalized/date": "^3.10.1",
-		"@nuxt/icon": "2.2.1",
-		"@nuxt/ui": "4.4.0",
-		"@tiptap/extension-collaboration": "^3.17.1",
-		"@tiptap/extension-node-range": "^3.17.1",
-		"@tiptap/y-tiptap": "^3.0.2",
-		"nuxt": "^4.3.0",
-		"tailwindcss": "^4.1.18",
-		"yaml": "^2.8.2",
-		"yjs": "^13.6.29"
-	}
+  "name": "codemirror-rich-obsidian",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "nuxt build",
+    "dev": "nuxt dev",
+    "generate": "nuxt generate",
+    "preview": "nuxt preview",
+    "postinstall": "nuxt prepare",
+    "lint": "eslint .",
+    "lint:fix": "eslint --fix ."
+  },
+  "dependencies": {
+    "@iconify-json/lucide": "^1.2.86",
+    "@iconify-json/simple-icons": "^1.2.67",
+    "@nuxt/fonts": "0.13.0",
+    "@nuxt/icon": "2.2.1",
+    "@nuxt/image": "2.0.0",
+    "@nuxt/ui": "^4.4.0",
+    "nuxt": "^4.3.0"
+  },
+  "devDependencies": {
+    "@tailwindcss/language-server": "^0.14.29",
+    "typescript": "^5.9.3"
+  },
+  "trustedDependencies": [
+    "@parcel/watcher",
+    "@tailwindcss/oxide",
+    "core-js",
+    "esbuild",
+    "sharp",
+    "vue-demi"
+  ]
 }

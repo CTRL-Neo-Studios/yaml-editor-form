@@ -42,3 +42,6 @@ const open = defineModel('open', {type: Boolean, default: undefined})
         </template>
     </UCollapsible>
 </template>
+<style>
+@reference "~/assets/css/main.css";
+</style>

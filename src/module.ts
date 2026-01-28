@@ -28,5 +28,7 @@ export default defineNuxtModule<ModuleOptions>({
 		_nuxt.options.alias['@type32/yaml-editor-form'] = resolver.resolve(
 			'./runtime/assets/css',
 		)
+
+		_nuxt.options.css.unshift(resolver.resolve('./runtime/assets/css/main.css'))
 	},
 })
