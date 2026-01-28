@@ -36,7 +36,7 @@ const open = defineModel('open', {type: Boolean, default: undefined})
         </div>
 
         <template #content>
-            <div class="mt-1 ml-2 pl-3 border-l border-l-muted">
+            <div class="yaml-collapsible-content">
                 <slot/>
             </div>
         </template>

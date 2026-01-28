@@ -1,2 +1,6 @@
 @import "tailwindcss";
 @import "@nuxt/ui";
+
+.yaml-collapsible-content {
+	@apply mt-1 ml-2 pl-3 border-l border-l-muted;
+}
