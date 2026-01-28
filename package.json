@@ -1,6 +1,6 @@
 {
 	"name": "@type32/yaml-editor-form",
-	"version": "0.1.1",
+	"version": "0.1.2",
 	"description": "OFM Editor Component for Nuxt.",
 	"repository": "https://github.com/CTRL-Neo-Studios/yaml-editor-form",
 	"license": "MIT",

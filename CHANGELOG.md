@@ -1,6 +1,18 @@
 # Changelog
 
 
+## v0.1.2
+
+[compare changes](https://github.com/CTRL-Neo-Studios/yaml-editor-form/compare/v0.1.10...v0.1.2)
+
+### 🏡 Chore
+
+- Accidentally pushed to the wrong repo ([fd185da](https://github.com/CTRL-Neo-Studios/yaml-editor-form/commit/fd185da))
+
+### ❤️ Contributors
+
+- Type-32 ([@Type-32](https://github.com/Type-32))
+
 ## v0.1.10
 
 [compare changes](https://github.com/Type-32/codemirror-rich-obsidian/compare/v0.1.9...v0.1.10)
