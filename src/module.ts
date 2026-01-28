@@ -19,7 +19,7 @@ export default defineNuxtModule<ModuleOptions>({
 		addComponentsDir({path: resolver.resolve('runtime/components')})
 		addImportsDir(resolver.resolve('runtime/composables'))
 
-		_nuxt.options.build.transpile.push('yaml')
+		_nuxt.options.build.transpile.push('js-yaml')
 
 		_nuxt.options.alias['@type32/yaml-editor-form'] = resolver.resolve(
 			'./runtime/types/types',

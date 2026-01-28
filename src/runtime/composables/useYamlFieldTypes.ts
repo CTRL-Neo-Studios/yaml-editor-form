@@ -1,82 +1,5 @@
 import type {YamlFieldType} from "../types/types";
 
-/**
- * Default field types registry
- * This is the single source of truth for all built-in field types
- */
-export const DEFAULT_FIELD_TYPES: YamlFieldType[] = [
-    {
-        type: 'string',
-        label: 'Text',
-        icon: 'i-lucide-type',
-        defaultValue: '',
-        detect: (value) => typeof value === 'string' && !isDateString(value) && !isDateTimeString(value)
-    },
-    {
-        type: 'textarea',
-        label: 'Long Text',
-        icon: 'i-lucide-align-left',
-        defaultValue: '',
-        component: 'textarea'
-    },
-    {
-        type: 'number',
-        label: 'Number',
-        icon: 'i-lucide-hash',
-        defaultValue: 0,
-        detect: (value) => typeof value === 'number'
-    },
-    {
-        type: 'boolean',
-        label: 'Boolean',
-        icon: 'i-lucide-circle-check',
-        defaultValue: false,
-        detect: (value) => typeof value === 'boolean'
-    },
-    {
-        type: 'date',
-        label: 'Date',
-        icon: 'i-lucide-calendar',
-        defaultValue: () => new Date(),
-        detect: (value) => isDateObject(value) || isDateString(value)
-    },
-    {
-        type: 'datetime',
-        label: 'Date & Time',
-        icon: 'i-lucide-calendar-clock',
-        defaultValue: () => new Date(),
-        detect: (value) => isDateTimeString(value)
-    },
-    {
-        type: 'string-array',
-        label: 'Tags',
-        icon: 'i-lucide-tags',
-        defaultValue: [],
-        detect: (value) => isStringArray(value)
-    },
-    {
-        type: 'array',
-        label: 'Array',
-        icon: 'i-lucide-list',
-        defaultValue: [],
-        detect: (value) => Array.isArray(value) && !isStringArray(value)
-    },
-    {
-        type: 'object',
-        label: 'Object',
-        icon: 'i-lucide-box',
-        defaultValue: {},
-        detect: (value) => typeof value === 'object' && value !== null && !Array.isArray(value) && !isDateObject(value)
-    },
-    {
-        type: 'null',
-        label: 'Null',
-        icon: 'i-lucide-circle-slash',
-        defaultValue: null,
-        detect: (value) => value === null
-    }
-]
-
 // Helper detection functions
 function isDateObject(value: any): boolean {
     return value instanceof Date
@@ -102,6 +25,79 @@ function isStringArray(value: any): boolean {
  * Composable for managing YAML field types
  */
 export function useYamlFieldTypes(customTypes?: YamlFieldType[]) {
+	const DEFAULT_FIELD_TYPES: YamlFieldType[] = [
+		{
+			type: 'string',
+			label: 'Text',
+			icon: 'i-lucide-type',
+			defaultValue: '',
+			detect: (value) => typeof value === 'string' && !isDateString(value) && !isDateTimeString(value)
+		},
+		{
+			type: 'textarea',
+			label: 'Long Text',
+			icon: 'i-lucide-align-left',
+			defaultValue: '',
+			component: 'textarea'
+		},
+		{
+			type: 'number',
+			label: 'Number',
+			icon: 'i-lucide-hash',
+			defaultValue: 0,
+			detect: (value) => typeof value === 'number'
+		},
+		{
+			type: 'boolean',
+			label: 'Boolean',
+			icon: 'i-lucide-circle-check',
+			defaultValue: false,
+			detect: (value) => typeof value === 'boolean'
+		},
+		{
+			type: 'date',
+			label: 'Date',
+			icon: 'i-lucide-calendar',
+			defaultValue: () => new Date(),
+			detect: (value) => isDateObject(value) || isDateString(value)
+		},
+		{
+			type: 'datetime',
+			label: 'Date & Time',
+			icon: 'i-lucide-calendar-clock',
+			defaultValue: () => new Date(),
+			detect: (value) => isDateTimeString(value)
+		},
+		{
+			type: 'string-array',
+			label: 'Tags',
+			icon: 'i-lucide-tags',
+			defaultValue: [],
+			detect: (value) => isStringArray(value)
+		},
+		{
+			type: 'array',
+			label: 'Array',
+			icon: 'i-lucide-list',
+			defaultValue: [],
+			detect: (value) => Array.isArray(value) && !isStringArray(value)
+		},
+		{
+			type: 'object',
+			label: 'Object',
+			icon: 'i-lucide-box',
+			defaultValue: {},
+			detect: (value) => typeof value === 'object' && value !== null && !Array.isArray(value) && !isDateObject(value)
+		},
+		{
+			type: 'null',
+			label: 'Null',
+			icon: 'i-lucide-circle-slash',
+			defaultValue: null,
+			detect: (value) => value === null
+		}
+	]
+
     // Merge custom types with defaults
     const fieldTypes = computed(() => {
         const types = [...DEFAULT_FIELD_TYPES]
@@ -178,6 +174,7 @@ export function useYamlFieldTypes(customTypes?: YamlFieldType[]) {
         detectFieldType,
         getDefaultValue,
         getIcon,
-        getTypeMenuItems
+        getTypeMenuItems,
+		DEFAULT_FIELD_TYPES
     }
 }

@@ -27,6 +27,12 @@ watch(yamlData, (newVal) => {
 
 <template>
 	<div class="min-h-screen bg-default p-8">
+		<UCollapsible>
+			<UButton>/</UButton>
+			<template #content>
+				Test
+			</template>
+		</UCollapsible>
 		<div class="max-w-4xl mx-auto space-y-6">
 			<div>
 				<h1 class="text-2xl font-bold mb-2">YAML Form Editor Demo</h1>

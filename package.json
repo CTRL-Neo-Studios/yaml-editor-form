@@ -71,7 +71,6 @@
 		"sharp",
 		"unrs-resolver",
 		"vue-demi",
-		"js-yaml",
-		"alfaaz"
+		"js-yaml"
 	]
 }

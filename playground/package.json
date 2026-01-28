@@ -15,10 +15,13 @@
     "@iconify-json/lucide": "^1.2.86",
     "@iconify-json/simple-icons": "^1.2.67",
     "@nuxt/fonts": "0.13.0",
-    "@nuxt/icon": "2.2.1",
     "@nuxt/image": "2.0.0",
     "@nuxt/ui": "^4.4.0",
-    "nuxt": "^4.3.0"
+    "@tiptap/extension-collaboration": "^3.18.0",
+    "@tiptap/extension-node-range": "^3.18.0",
+    "@tiptap/y-tiptap": "^3.0.2",
+    "nuxt": "^4.3.0",
+    "yjs": "^13.6.29"
   },
   "devDependencies": {
     "@tailwindcss/language-server": "^0.14.29",

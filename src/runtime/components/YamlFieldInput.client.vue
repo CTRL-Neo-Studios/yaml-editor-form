@@ -1,4 +1,7 @@
 <script setup lang="ts">
+import { CalendarDate, CalendarDateTime, parseDate, parseDateTime } from '@internationalized/date'
+import type {YamlFieldType} from "../types/types";
+import {ref, watch, computed} from 'vue';
 /**
  * YAML Field Input - Renders input components for simple field types
  *
@@ -14,10 +17,6 @@
  *
  * Custom field types can be rendered via slots.
  */
-
-import { CalendarDate, CalendarDateTime, parseDate, parseDateTime } from '@internationalized/date'
-import type {YamlFieldType} from "../types/types";
-import {ref, watch, computed} from 'vue';
 
 type YamlValue = string | number | boolean | null | Date | YamlValue[] | { [key: string]: YamlValue }
 
