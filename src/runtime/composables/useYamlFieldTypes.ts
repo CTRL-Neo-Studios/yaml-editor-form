@@ -1,4 +1,4 @@
-import type {YamlFieldType} from "../types/types";
+import type {YamlFieldType, YamlBaseType} from "../types/types";
 import {computed} from 'vue';
 
 // Helper detection functions
@@ -32,6 +32,7 @@ export function useYamlFieldTypes(customTypes?: YamlFieldType[]) {
 			label: 'Text',
 			icon: 'i-lucide-type',
 			defaultValue: '',
+			baseType: 'string',
 			detect: (value) => typeof value === 'string' && !isDateString(value) && !isDateTimeString(value)
 		},
 		{
@@ -39,6 +40,7 @@ export function useYamlFieldTypes(customTypes?: YamlFieldType[]) {
 			label: 'Long Text',
 			icon: 'i-lucide-align-left',
 			defaultValue: '',
+			baseType: 'string',
 			component: 'textarea'
 		},
 		{
@@ -46,6 +48,7 @@ export function useYamlFieldTypes(customTypes?: YamlFieldType[]) {
 			label: 'Number',
 			icon: 'i-lucide-hash',
 			defaultValue: 0,
+			baseType: 'number',
 			detect: (value) => typeof value === 'number'
 		},
 		{
@@ -53,6 +56,7 @@ export function useYamlFieldTypes(customTypes?: YamlFieldType[]) {
 			label: 'Boolean',
 			icon: 'i-lucide-circle-check',
 			defaultValue: false,
+			baseType: 'boolean',
 			detect: (value) => typeof value === 'boolean'
 		},
 		{
@@ -60,6 +64,7 @@ export function useYamlFieldTypes(customTypes?: YamlFieldType[]) {
 			label: 'Date',
 			icon: 'i-lucide-calendar',
 			defaultValue: () => new Date(),
+			baseType: 'date',
 			detect: (value) => isDateObject(value) || isDateString(value)
 		},
 		{
@@ -67,6 +72,7 @@ export function useYamlFieldTypes(customTypes?: YamlFieldType[]) {
 			label: 'Date & Time',
 			icon: 'i-lucide-calendar-clock',
 			defaultValue: () => new Date(),
+			baseType: 'datetime',
 			detect: (value) => isDateTimeString(value)
 		},
 		{
@@ -74,6 +80,7 @@ export function useYamlFieldTypes(customTypes?: YamlFieldType[]) {
 			label: 'Tags',
 			icon: 'i-lucide-tags',
 			defaultValue: [],
+			baseType: 'string-array',
 			detect: (value) => isStringArray(value)
 		},
 		{
@@ -81,6 +88,7 @@ export function useYamlFieldTypes(customTypes?: YamlFieldType[]) {
 			label: 'Array',
 			icon: 'i-lucide-list',
 			defaultValue: [],
+			baseType: 'array',
 			detect: (value) => Array.isArray(value) && !isStringArray(value)
 		},
 		{
@@ -88,6 +96,7 @@ export function useYamlFieldTypes(customTypes?: YamlFieldType[]) {
 			label: 'Object',
 			icon: 'i-lucide-box',
 			defaultValue: {},
+			baseType: 'object',
 			detect: (value) => typeof value === 'object' && value !== null && !Array.isArray(value) && !isDateObject(value)
 		},
 		{
@@ -95,6 +104,7 @@ export function useYamlFieldTypes(customTypes?: YamlFieldType[]) {
 			label: 'Null',
 			icon: 'i-lucide-circle-slash',
 			defaultValue: null,
+			baseType: 'null',
 			detect: (value) => value === null
 		}
 	]
@@ -102,20 +112,27 @@ export function useYamlFieldTypes(customTypes?: YamlFieldType[]) {
     // Merge custom types with defaults
     const fieldTypes = computed(() => {
         const types = [...DEFAULT_FIELD_TYPES]
+        const newCustomTypes: YamlFieldType[] = []
 
         if (customTypes) {
-            // Add or override with custom types
+            // Separate custom types into overrides and new types
             for (const customType of customTypes) {
                 const existingIndex = types.findIndex(t => t.type === customType.type)
                 if (existingIndex >= 0) {
+                    // Override existing type
                     types[existingIndex] = customType
                 } else {
-                    types.push(customType)
+                    // New custom type - will be prepended (checked first)
+                    newCustomTypes.push(customType)
                 }
             }
         }
 
-        return types
+        // Prepend new custom types so they're checked BEFORE default types
+        // This ensures:
+        // 1. Custom types appear FIRST in "Add Field" dropdowns
+        // 2. Custom detect functions are checked before default types
+        return [...newCustomTypes, ...types]
     })
 
     /**

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type {DropdownMenuItem} from "@nuxt/ui";
-import type {YamlFieldType} from "../types/types";
+import type {YamlFieldType, YamlBaseType} from "../types/types";
 import {useYamlFieldTypes} from "../composables/useYamlFieldTypes";
 import {ref, watch, computed} from 'vue';
 
@@ -128,8 +128,22 @@ function isValidConversion(fromType: string, toType: string): boolean {
     // Null can convert to anything
     if (fromType === 'null') return true
 
-    // Define conversion rules
-    const conversionRules: Record<string, string[]> = {
+    // Get base types (required field now)
+    const fromFieldType = getFieldType(fromType)
+    const toFieldType = getFieldType(toType)
+    
+    if (!fromFieldType || !toFieldType) return false
+    
+    const fromBase = fromFieldType.baseType
+    const toBase = toFieldType.baseType
+
+    // Allow conversion between a type and its base type (for custom types)
+    // e.g., color (baseType: string) can convert to string
+    if (fromType === toBase || toType === fromBase) return true
+    if (fromBase === toType || toBase === fromType) return true
+
+    // Define conversion rules (using base types) - fully type-safe
+    const conversionRules: Record<YamlBaseType, YamlBaseType[]> = {
         // Primitives can convert to other primitives and arrays
         'string': ['number', 'boolean', 'date', 'datetime', 'string-array', 'null'],
         'number': ['string', 'boolean', 'null'],
@@ -147,10 +161,14 @@ function isValidConversion(fromType: string, toType: string): boolean {
 
         // Objects can only convert to null (converting to primitives is useless)
         'object': ['null'],
+        
+        // Null is always terminal
+        'null': []
     }
 
-    const allowedConversions = conversionRules[fromType] || []
-    return allowedConversions.includes(toType)
+    // Check conversion rules using base types
+    const allowedConversions = conversionRules[fromBase] || []
+    return allowedConversions.includes(toBase)
 }
 
 // Type conversion using schema-based defaults

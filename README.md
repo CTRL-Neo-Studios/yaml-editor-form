@@ -96,7 +96,7 @@ const data = ref({
 </script>
 
 <template>
-    <YamlForm v-model="data" />
+    <YamlFormEditor v-model="data" />
 </template>
 ```
 
@@ -104,7 +104,7 @@ const data = ref({
 
 ```vue
 <script setup lang="ts">
-import type { YamlFieldType } from './useYamlFieldTypes'
+import type { YamlFieldType } from '@type32/yaml-editor-form'
 
 const customTypes: YamlFieldType[] = [
     {
@@ -123,11 +123,15 @@ const data = ref({
 </script>
 
 <template>
-    <YamlForm v-model="data" :field-types="customTypes">
-        <template #field-image="{ modelValue, readonly }">
-            <MyImagePicker v-model="modelValue" :disabled="readonly" />
+    <YamlFormEditor v-model="data" :field-types="customTypes">
+        <template #field-image="{ modelValue, readonly, updateModelValue }">
+            <MyImagePicker 
+                :model-value="modelValue" 
+                :disabled="readonly"
+                @update:model-value="updateModelValue"
+            />
         </template>
-    </YamlForm>
+    </YamlFormEditor>
 </template>
 ```
 
@@ -136,7 +140,7 @@ const data = ref({
 ### Component Hierarchy
 
 ```
-YamlForm.vue (Entry Point)
+YamlFormEditor.vue (Entry Point)
 └── YamlFormField.vue (Recursive Component)
     ├── YamlFieldInput.vue (Simple Types)
     │   ├── UInput (string)
@@ -147,7 +151,7 @@ YamlForm.vue (Entry Point)
     │   ├── UInputTags (string-array)
     │   └── Custom Slots (user-defined)
     └── YamlFormField.vue (Complex Types - Recursive)
-        ├── Collapsible (objects/arrays)
+        ├── YamlCollapsible (objects/arrays)
         └── Array/Object rendering
 ```
 
@@ -160,7 +164,7 @@ YamlFieldInput (v-model)
     ↓
 YamlFormField (v-model)
     ↓
-YamlForm (v-model)
+YamlFormEditor (v-model)
     ↓
 Parent Component (data binding)
 ```
@@ -179,7 +183,7 @@ Components (Rendering)
 
 ## Component API
 
-### YamlForm
+### YamlFormEditor
 
 Main entry point for the editor.
 
@@ -207,8 +211,33 @@ Main entry point for the editor.
 All custom field component slots are supported:
 
 ```vue
-<template #field-{component}="{ modelValue, readonly, valueType }">
+<template #field-{component}="{ modelValue, readonly, valueType, updateModelValue }">
     <!-- Your custom component -->
+    <!-- Use :model-value and @update:model-value, NOT v-model -->
+</template>
+```
+
+**Slot Props:**
+- `modelValue`: Current field value (read-only prop)
+- `readonly`: Whether field is in read-only mode
+- `valueType`: Type identifier string
+- `updateModelValue`: Function to update value: `(newValue) => void`
+
+**Important:** You cannot use `v-model` on slot props (they're read-only). Use `:model-value` and `@update:model-value` instead:
+
+```vue
+<!-- ❌ WRONG - v-model doesn't work on slot props -->
+<template #field-color="{ modelValue, readonly }">
+    <UColorPicker v-model="modelValue" :disabled="readonly" />
+</template>
+
+<!-- ✅ CORRECT - use updateModelValue function -->
+<template #field-color="{ modelValue, readonly, updateModelValue }">
+    <UColorPicker 
+        :model-value="modelValue" 
+        :disabled="readonly"
+        @update:model-value="updateModelValue"
+    />
 </template>
 ```
 
@@ -240,7 +269,7 @@ Recursive component that handles individual fields.
 
 #### Slots
 
-Same as YamlForm - all custom field slots are forwarded.
+Same as YamlFormEditor - all custom field slots are forwarded through the recursive hierarchy.
 
 ### YamlFieldInput
 
@@ -268,25 +297,72 @@ Renders input components for simple types.
 #### Slots
 
 ```vue
-<template #field-{component}="{ modelValue, readonly, valueType }">
+<template #field-{component}="{ modelValue, readonly, valueType, updateModelValue }">
     <!-- Custom input component -->
+    <!-- Use updateModelValue function for two-way binding -->
 </template>
 ```
+
+**Slot Props:**
+- `modelValue`: Current value (read-only)
+- `readonly`: Whether field is read-only
+- `valueType`: Type identifier
+- `updateModelValue`: Update function `(val) => void`
 
 ## Field Types
 
 ### Type Definition
 
 ```typescript
+// Valid base types (type-safe!)
+type YamlBaseType = 
+    | 'string'       // Text primitives
+    | 'number'       // Numeric primitives
+    | 'boolean'      // Boolean primitives
+    | 'date'         // Date without time
+    | 'datetime'     // Date with time
+    | 'string-array' // Array of strings (tags)
+    | 'array'        // Generic array
+    | 'object'       // Generic object
+    | 'null'         // Null value
+
 interface YamlFieldType {
-    type: string              // Unique type identifier
+    type: string              // Unique type identifier (e.g., 'color', 'email')
     label: string             // Display name in dropdowns
     icon: string              // Lucide icon name (i-lucide-*)
     defaultValue: any         // Default value or factory function
+    baseType: YamlBaseType    // REQUIRED: Base type for conversion rules
     component?: string        // Optional: slot name for custom rendering
     detect?: (value: any) => boolean  // Optional: auto-detection function
 }
 ```
+
+**The `baseType` Field (Type-Safe!):**
+
+The `baseType` field is **required** and must be one of the predefined base types. This provides:
+- ✅ **TypeScript autocomplete** - IntelliSense suggests valid base types
+- ✅ **Compile-time safety** - Typos are caught immediately
+- ✅ **Conversion inheritance** - Custom types inherit conversion rules from their base
+- ✅ **Clear semantics** - Explicit relationship between custom and base types
+
+**Examples:**
+```typescript
+// ✅ Valid - 'string' is a valid YamlBaseType
+{ type: 'color', baseType: 'string' }
+
+// ✅ Valid - 'number' is a valid YamlBaseType
+{ type: 'percentage', baseType: 'number' }
+
+// ❌ Invalid - TypeScript error (not a valid base type)
+{ type: 'custom', baseType: 'invalid' }  // Type error!
+```
+
+**Conversion Inheritance:**
+- A `color` type with `baseType: 'string'` can convert to/from anything a string can
+- A `percentage` type with `baseType: 'number'` inherits number conversions
+- Custom types can also convert directly to/from their base type
+
+This enables powerful type hierarchies without duplicating conversion logic.
 
 ### Built-in Types
 
@@ -427,7 +503,7 @@ const customTypes: YamlFieldType[] = [
 ```
 
 ```vue
-<YamlForm v-model="data" :field-types="customTypes" />
+<YamlFormEditor v-model="data" :field-types="customTypes" />
 ```
 
 ### Adding a Runtime Type (With Custom Component)
@@ -439,23 +515,25 @@ const customTypes: YamlFieldType[] = [
         label: 'Color',
         icon: 'i-lucide-palette',
         defaultValue: '#000000',
+        baseType: 'string',  // Inherits string conversions
         component: 'color',  // Enables slot
-        detect: (value) => /^#[0-9A-Fa-f]{6}$/.test(value)
+        detect: (value) => typeof value === 'string' && /^#[0-9A-Fa-f]{6}$/.test(value)
     }
 ]
 ```
 
 ```vue
-<YamlForm v-model="data" :field-types="customTypes">
-    <template #field-color="{ modelValue, readonly }">
+<YamlFormEditor v-model="data" :field-types="customTypes">
+    <template #field-color="{ modelValue, readonly, updateModelValue }">
         <input 
             type="color" 
-            v-model="modelValue"
+            :value="modelValue"
             :disabled="readonly"
+            @input="(e) => updateModelValue(e.target.value)"
             class="w-full h-10 rounded"
         />
     </template>
-</YamlForm>
+</YamlFormEditor>
 ```
 
 ### Overriding Built-in Types
@@ -473,11 +551,15 @@ const customTypes: YamlFieldType[] = [
 ```
 
 ```vue
-<YamlForm v-model="data" :field-types="customTypes">
-    <template #field-richtext="{ modelValue, readonly }">
-        <MyRichTextEditor v-model="modelValue" :read-only="readonly" />
+<YamlFormEditor v-model="data" :field-types="customTypes">
+    <template #field-richtext="{ modelValue, readonly, updateModelValue }">
+        <MyRichTextEditor 
+            :model-value="modelValue" 
+            :read-only="readonly"
+            @update:model-value="updateModelValue"
+        />
     </template>
-</YamlForm>
+</YamlFormEditor>
 ```
 
 ## Schema System
@@ -558,7 +640,7 @@ const config = ref({
 </script>
 
 <template>
-    <YamlForm v-model="config" />
+    <YamlFormEditor v-model="config" />
 </template>
 ```
 
@@ -577,7 +659,7 @@ const article = ref({
 </script>
 
 <template>
-    <YamlForm v-model="article" />
+    <YamlFormEditor v-model="article" />
 </template>
 ```
 
@@ -594,7 +676,7 @@ const data = ref({
 </script>
 
 <template>
-    <YamlForm v-model="data" />
+    <YamlFormEditor v-model="data" />
 </template>
 ```
 
@@ -602,7 +684,7 @@ const data = ref({
 
 ```vue
 <script setup lang="ts">
-import type { YamlFieldType } from './useYamlFieldTypes'
+import type { YamlFieldType } from '@type32/yaml-editor-form'
 
 // Define custom types
 const customTypes: YamlFieldType[] = [
@@ -630,23 +712,25 @@ const post = ref({
 </script>
 
 <template>
-    <YamlForm v-model="post" :field-types="customTypes">
+    <YamlFormEditor v-model="post" :field-types="customTypes">
         <!-- Image picker component -->
-        <template #field-image="{ modelValue, readonly }">
+        <template #field-image="{ modelValue, readonly, updateModelValue }">
             <MyImagePicker 
-                v-model="modelValue" 
+                :model-value="modelValue" 
                 :disabled="readonly"
+                @update:model-value="updateModelValue"
             />
         </template>
         
         <!-- Markdown editor component -->
-        <template #field-markdown="{ modelValue, readonly }">
+        <template #field-markdown="{ modelValue, readonly, updateModelValue }">
             <MyMarkdownEditor 
-                v-model="modelValue"
+                :model-value="modelValue"
                 :read-only="readonly"
+                @update:model-value="updateModelValue"
             />
         </template>
-    </YamlForm>
+    </YamlFormEditor>
 </template>
 ```
 
@@ -672,7 +756,7 @@ const customTypes: YamlFieldType[] = [
 </script>
 
 <template>
-    <YamlForm v-model="data" :field-types="customTypes" />
+    <YamlFormEditor v-model="data" :field-types="customTypes" />
 </template>
 ```
 
@@ -680,7 +764,7 @@ const customTypes: YamlFieldType[] = [
 
 ```vue
 <template>
-    <YamlForm v-model="data" readonly />
+    <YamlFormEditor v-model="data" readonly />
 </template>
 ```
 
@@ -712,7 +796,7 @@ const complexData = ref({
 </script>
 
 <template>
-    <YamlForm v-model="complexData" />
+    <YamlFormEditor v-model="complexData" />
 </template>
 ```
 
@@ -720,10 +804,10 @@ const complexData = ref({
 
 ```
 components/
-├── YamlForm.vue                           ← Entry component
+├── YamlFormEditor.vue                     ← Entry component
 ├── YamlFormField.vue                      ← Recursive field component
 ├── YamlFieldInput.vue                     ← Input rendering component
-└── Collapsible.vue                        ← Collapsible UI component
+└── YamlCollapsible.vue                    ← Collapsible UI component
 
 composables/
 └── useYamlFieldTypes.ts                   ← Type registry & composable
@@ -903,27 +987,89 @@ interface YamlFieldInputProps {
 
 ### Slot Forwarding
 
-Slots are automatically forwarded through the component hierarchy:
+Slots are automatically forwarded through the component hierarchy using Vue 3's dynamic slot forwarding:
 
 ```
-YamlForm (defines slot)
-    ↓ forwards
-YamlFormField (forwards slot)
-    ↓ forwards
-YamlFieldInput (uses slot)
+YamlFormEditor (receives slot from parent)
+    ↓ forwards all slots with v-bind="slotProps"
+YamlFormField (receives & forwards slots)
+    ↓ forwards all slots with v-bind="slotProps"
+    ↓ (recursively for nested structures)
+YamlFieldInput (terminal - uses slot)
+    ↓ renders slot: #field-{component}
+    ↓ provides props: { modelValue, readonly, valueType, updateModelValue }
+Custom Component
 ```
 
-This allows custom components to work at any nesting level.
+**How It Works:**
+
+1. **YamlFormEditor** (lines 89-92): Receives slots and forwards to YamlFormField
+2. **YamlFormField** (lines 634-636): Forwards slots to YamlFieldInput OR itself (for recursion)
+3. **YamlFieldInput** (lines 88-95): Final destination - renders slot with props
+
+**Slot Props Flow:**
+
+The `updateModelValue` function is created at the YamlFieldInput level and allows your custom component to update the value:
+
+```typescript
+// In YamlFieldInput.vue
+:update-model-value="(val: YamlValue) => modelValue = val"
+```
+
+This function captures the parent's `modelValue` ref and updates it directly, maintaining reactivity throughout the hierarchy.
+
+**Example with Nested Structure:**
+
+```vue
+<!-- Works at any depth! -->
+<YamlFormEditor v-model="data" :field-types="customTypes">
+    <template #field-color="{ modelValue, updateModelValue }">
+        <UColorPicker 
+            :model-value="modelValue"
+            @update:model-value="updateModelValue"
+        />
+    </template>
+</YamlFormEditor>
+```
+
+Even if your color field is deeply nested (`data.theme.colors.primary`), the slot works identically because slots are forwarded at every level.
 
 ### Type Priority
 
-When multiple types have `detect` functions that match:
+**Detection Order (NEW in v0.2.0):**
 
-1. Types are checked in array order
-2. First matching type wins
-3. More specific types should come before general types
+Custom types with `detect` functions are now checked **before** default types:
 
-**Example order:**
+1. **Custom types** (checked first) - Your custom types take priority
+2. **Default types** (checked second) - Built-in types as fallback
+3. First matching type wins
+
+This means:
+- ✅ Your `color` type will be detected before the default `string` type
+- ✅ Custom types override default detection behavior
+- ✅ More specific types should still have more specific detect functions
+
+**Example:**
+```typescript
+// Custom color type checked FIRST
+const customTypes = [{
+    type: 'color',
+    baseType: 'string',
+    detect: (v) => typeof v === 'string' && /^#[0-9A-Fa-f]{6}$/.test(v)
+}]
+
+// Value '#FF0000' will match 'color' before 'string'
+```
+
+**Base Type Conversions:**
+
+When using `baseType`, conversion rules follow this logic:
+
+1. Can convert between type and its baseType (e.g., `color` ↔ `string`)
+2. Can convert to anything the baseType can (e.g., `color` → `number` because `string` → `number`)
+3. Custom conversion rules take precedence over inherited rules
+
+**Example order for default types:**
 ```typescript
 [
     { type: 'datetime', detect: (v) => isDateTimeString(v) },  // Specific
@@ -1046,11 +1192,11 @@ For issues, questions, or feature requests, refer to the main Vertex project doc
 
 ### Core Components
 
-- **YamlForm**: Entry point component for the editor
+- **YamlFormEditor**: Entry point component for the editor
 - **YamlFormField**: Recursive component handling individual fields
 - **YamlFieldInput**: Input rendering component for simple types
+- **YamlCollapsible**: UI component for collapsible sections
 - **useYamlFieldTypes**: Composable for type registry and management
-- **Collapsible**: UI component for collapsible sections
 
 ### Key Concepts
 
@@ -1077,11 +1223,15 @@ For issues, questions, or feature requests, refer to the main Vertex project doc
 
 **Add Custom Component:**
 ```vue
-<YamlForm>
-  <template #field-{type}="props">
-    <Component v-bind="props" />
+<YamlFormEditor v-model="data" :field-types="customTypes">
+  <template #field-{type}="{ modelValue, readonly, updateModelValue }">
+    <MyComponent 
+      :model-value="modelValue"
+      :disabled="readonly"
+      @update:model-value="updateModelValue"
+    />
   </template>
-</YamlForm>
+</YamlFormEditor>
 ```
 
 **Type Conversion:**

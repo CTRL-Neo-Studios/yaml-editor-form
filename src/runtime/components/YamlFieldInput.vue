@@ -91,6 +91,7 @@ const customSlotName = computed(() => {
         :model-value="modelValue"
         :readonly="readonly"
         :value-type="valueType"
+        :update-model-value="(val: YamlValue) => modelValue = val"
     />
 
     <!-- Built-in Input Components -->
@@ -142,7 +143,7 @@ const customSlotName = computed(() => {
             :model-value="typeof modelValue === 'string' ? stringToCalendarDate(modelValue) : jsDateToCalendarDate(new Date())"
             :size="size"
             :disabled="readonly"
-            @update:model-value="(val) => {
+            @update:model-value="(val: CalendarDate) => {
                 if (val && 'year' in val) {
                     modelValue = `${val.year}-${String(val.month).padStart(2, '0')}-${String(val.day).padStart(2, '0')}`
                 }

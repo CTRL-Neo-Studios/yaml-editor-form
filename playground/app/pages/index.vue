@@ -9,6 +9,7 @@ const yamlData = ref<YamlFormData>({
 	count: 42,
 	is_active: true,
 	tags: ['vue', 'nuxt', 'yaml'],
+	primaryColor: '#FF5733',  // Test color field
 	metadata: {
 		version: '1.0',
 		status: 'draft',
@@ -25,7 +26,8 @@ const customTypes: YamlFieldType[] = [
 		label: 'Color',
 		icon: 'i-lucide-palette',
 		defaultValue: '#FFFFFF',
-		detect: (value) => /^#[0-9A-Fa-f]{6}$/.test(value)
+		baseType: 'string',  // Color is fundamentally a string
+		detect: (value) => typeof value === 'string' && /^#[0-9A-Fa-f]{6}$/.test(value)
 	}
 ]
 
@@ -53,14 +55,15 @@ watch(yamlData, (newVal) => {
 					</div>
 				</template>
 
-				<YamlFormEditor size="sm" v-model="yamlData" :field-types="customTypes">
-					<template #field-color="{ modelValue, readonly }">
-						<UColorPicker
-							v-model="modelValue"
-							:disabled="readonly"
-						/>
-					</template>
-				</YamlFormEditor>
+			<YamlFormEditor v-model="yamlData" :field-types="customTypes">
+				<template #field-color="{ modelValue, readonly, updateModelValue }">
+					<UColorPicker
+						:model-value="modelValue as string"
+						:disabled="readonly"
+						@update:model-value="(val) => updateModelValue(val as string)"
+					/>
+				</template>
+			</YamlFormEditor>
 			</UCard>
 
 			<UCard>
