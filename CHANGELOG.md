@@ -1,6 +1,19 @@
 # Changelog
 
 
+## v0.1.3
+
+[compare changes](https://github.com/CTRL-Neo-Studios/yaml-editor-form/compare/v0.1.2...v0.1.3)
+
+### 🏡 Chore
+
+- Added vue import ([9228014](https://github.com/CTRL-Neo-Studios/yaml-editor-form/commit/9228014))
+- Changed css resolve ([605f7be](https://github.com/CTRL-Neo-Studios/yaml-editor-form/commit/605f7be))
+
+### ❤️ Contributors
+
+- Type-32 ([@Type-32](https://github.com/Type-32))
+
 ## v0.1.2
 
 [compare changes](https://github.com/CTRL-Neo-Studios/yaml-editor-form/compare/v0.1.10...v0.1.2)
