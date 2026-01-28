@@ -1,9 +1,7 @@
 <script setup lang="ts">
 import type {YamlFieldType, YamlFormData} from "../types/types";
 import {useYamlFieldTypes} from "../composables/useYamlFieldTypes";
-import YamlFormFieldClient from "./YamlFormField.client.vue";
 import {ref, watch, computed} from 'vue';
-import '../assets/css/main.css';
 
 /**
  * YAML Form Data Editor
@@ -70,7 +68,7 @@ const addFieldOptions = computed(() => {
 	<ClientOnly>
 		<div class="space-y-4">
 			<div class="space-y-3">
-				<YamlFormFieldClient
+				<YamlFormField
 					v-for="(value, key) in data"
 					:key="String(key)"
 					v-model="data[key]"
@@ -89,7 +87,7 @@ const addFieldOptions = computed(() => {
 					<template v-for="(_, name) in $slots" #[name]="slotProps">
 						<slot :name="name" v-bind="slotProps" />
 					</template>
-				</YamlFormFieldClient>
+				</YamlFormField>
 			</div>
 
 			<UDropdownMenu

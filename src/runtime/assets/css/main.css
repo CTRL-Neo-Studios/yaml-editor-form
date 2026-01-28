@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@import "tailwindcss/utilities" layer(utilities);
 @import "@nuxt/ui";
 
 .yaml-collapsible-content {

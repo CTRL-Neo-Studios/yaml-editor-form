@@ -1,8 +1,6 @@
 <script setup lang="ts">
 import type {DropdownMenuItem} from "@nuxt/ui";
-import YamlCollapsibleClient from "./YamlCollapsible.client.vue";
 import type {YamlFieldType} from "../types/types";
-import YamlFieldInputClient from "./YamlFieldInput.client.vue";
 import {useYamlFieldTypes} from "../composables/useYamlFieldTypes";
 import {ref, watch, computed} from 'vue';
 
@@ -409,7 +407,7 @@ const addArrayItemOptions = computed(() => {
             />
 
             <!-- Collapsible for non-edit mode -->
-            <YamlCollapsibleClient v-else v-model:open="isOpen" :default-open="true" :label="fieldKey">
+            <YamlCollapsible v-else v-model:open="isOpen" :default-open="true" :label="fieldKey">
                 <template #badge>
                     <UBadge size="xs" variant="soft" color="neutral">{{ itemCount }}</UBadge>
                 </template>
@@ -566,7 +564,7 @@ const addArrayItemOptions = computed(() => {
                     />
                 </UDropdownMenu>
             </div>
-            </YamlCollapsibleClient>
+            </YamlCollapsible>
         </template>
 
         <!-- For Simple Types: Regular Layout -->
@@ -621,7 +619,7 @@ const addArrayItemOptions = computed(() => {
             </div>
 
             <!-- Value Input for simple types -->
-            <YamlFieldInputClient
+            <YamlFieldInput
                 v-model="modelValue"
                 :value-type="valueType"
                 :readonly="readonly"
@@ -631,7 +629,7 @@ const addArrayItemOptions = computed(() => {
                 <template v-for="(_, name) in $slots" #[name]="slotProps">
                     <slot :name="name" v-bind="slotProps" />
                 </template>
-            </YamlFieldInputClient>
+            </YamlFieldInput>
         </template>
     </div>
 </template>
