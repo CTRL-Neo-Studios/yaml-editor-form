@@ -1,4 +1,5 @@
 import type {YamlFieldType} from "../types/types";
+import {computed} from 'vue';
 
 // Helper detection functions
 function isDateObject(value: any): boolean {

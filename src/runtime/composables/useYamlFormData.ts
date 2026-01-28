@@ -1,5 +1,5 @@
-import type { YamlFormData } from "../types/types"
-import YAML from 'yaml'
+import type { YamlFormData } from "../types/types";
+import YAML from 'yaml';
 
 /**
  * Composable for working with YAML form data
