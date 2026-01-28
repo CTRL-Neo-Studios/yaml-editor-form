@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type {YamlFormData} from "@type32/yaml-editor-form";
+import type {YamlFieldType, YamlFormData} from "@type32/yaml-editor-form";
 
 const yamlData = ref<YamlFormData>({
 	title: 'Demo Document',
@@ -18,6 +18,16 @@ const yamlData = ref<YamlFormData>({
 		{ name: 'Item 2', value: 200 },
 	],
 })
+const customTypes: YamlFieldType[] = [
+	{
+		type: 'color',
+		component: 'color',
+		label: 'Color',
+		icon: 'i-lucide-palette',
+		defaultValue: '#FFFFFF',
+		detect: (value) => /^#[0-9A-Fa-f]{6}$/.test(value)
+	}
+]
 
 // For debugging
 watch(yamlData, (newVal) => {
@@ -27,12 +37,6 @@ watch(yamlData, (newVal) => {
 
 <template>
 	<div class="min-h-screen bg-default p-8">
-		<UCollapsible>
-			<UButton>/</UButton>
-			<template #content>
-				Test
-			</template>
-		</UCollapsible>
 		<div class="max-w-4xl mx-auto space-y-6">
 			<div>
 				<h1 class="text-2xl font-bold mb-2">YAML Form Editor Demo</h1>
@@ -49,7 +53,14 @@ watch(yamlData, (newVal) => {
 					</div>
 				</template>
 
-				<YamlFormEditor v-model="yamlData" />
+				<YamlFormEditor size="sm" v-model="yamlData" :field-types="customTypes">
+					<template #field-color="{ modelValue, readonly }">
+						<UColorPicker
+							v-model="modelValue"
+							:disabled="readonly"
+						/>
+					</template>
+				</YamlFormEditor>
 			</UCard>
 
 			<UCard>

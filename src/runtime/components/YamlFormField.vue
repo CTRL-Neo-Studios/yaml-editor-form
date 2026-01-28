@@ -32,9 +32,11 @@ const props = withDefaults(defineProps<{
     depth?: number,
     /** Custom field type definitions (merged with defaults) */
     fieldTypes?: YamlFieldType[],
+	size?: "xl" | "lg" | "md" | "sm" | "xs"
 }>(), {
     readonly: false,
     depth: 0,
+	size: 'xs'
 })
 
 const emit = defineEmits<{
@@ -398,7 +400,7 @@ const addArrayItemOptions = computed(() => {
             <UInput
                 v-if="isEditingKey"
                 v-model="editingKeyValue"
-                size="xs"
+                :size="size"
                 autofocus
                 class="mb-1"
                 @blur="saveKey"
@@ -409,7 +411,7 @@ const addArrayItemOptions = computed(() => {
             <!-- Collapsible for non-edit mode -->
             <YamlCollapsible v-else v-model:open="isOpen" :default-open="true" :label="fieldKey">
                 <template #badge>
-                    <UBadge size="xs" variant="soft" color="neutral">{{ itemCount }}</UBadge>
+                    <UBadge :size="size" variant="soft" color="neutral">{{ itemCount }}</UBadge>
                 </template>
 
                 <template #actions>
@@ -419,7 +421,7 @@ const addArrayItemOptions = computed(() => {
                             v-if="!readonly && !isEditingKey && !isArrayItem"
                             icon="i-lucide-pencil"
                             variant="ghost"
-                            size="xs"
+                            :size="size"
                             color="neutral"
                             class="text-muted"
                             @click.stop="startEditingKey"
@@ -429,12 +431,12 @@ const addArrayItemOptions = computed(() => {
                         <UDropdownMenu
                             :items="[typeOptions]"
                             :disabled="readonly"
-                            size="xs"
+                            :size="size"
                         >
                             <UButton
                                 :icon="selectedType?.icon || 'i-heroicons-circle-question-mark'"
                                 variant="soft"
-                                size="xs"
+                                :size="size"
                                 :disabled="readonly"
                             />
                         </UDropdownMenu>
@@ -444,7 +446,7 @@ const addArrayItemOptions = computed(() => {
                             v-if="!readonly"
                             icon="i-lucide-trash"
                             variant="ghost"
-                            size="xs"
+                            :size="size"
                             color="error"
                             @click.stop="emit('remove')"
                         />
@@ -480,6 +482,7 @@ const addArrayItemOptions = computed(() => {
                                     if (Array.isArray(modelValue)) modelValue[index] = val
                                 }"
                                 @remove="removeArrayItem(index)"
+								:size="size"
                             />
                         </div>
                     </div>
@@ -489,13 +492,13 @@ const addArrayItemOptions = computed(() => {
                     <UDropdownMenu
                         v-if="!readonly"
                         :items="[addArrayItemOptions]"
-                        size="xs"
+                        :size="size"
                     >
                         <UButton
                             icon="i-lucide-plus"
                             label="Add Item"
                             variant="link"
-                            size="xs"
+                            :size="size"
                             color="neutral"
                         />
                     </UDropdownMenu>
@@ -506,7 +509,7 @@ const addArrayItemOptions = computed(() => {
                         icon="i-lucide-copy-plus"
                         label="From Template"
                         variant="link"
-                        size="xs"
+                        :size="size"
                         color="neutral"
                         @click="addArrayItemFromTemplate"
                     />
@@ -533,6 +536,7 @@ const addArrayItemOptions = computed(() => {
                             :readonly="readonly"
                             :depth="depth + 1"
                             :field-types="fieldTypes"
+							:size="size"
                             @update:model-value="(val: YamlValue) => {
                                 if (typeof modelValue === 'object' && !Array.isArray(modelValue) && modelValue !== null && !isDateObject(modelValue)) {
                                     (modelValue as Record<string, YamlValue>)[key] = val
@@ -553,13 +557,13 @@ const addArrayItemOptions = computed(() => {
                 <UDropdownMenu
                     v-if="!readonly"
                     :items="[addFieldOptions]"
-                    size="xs"
+                    :size="size"
                 >
                     <UButton
                         icon="i-lucide-plus"
                         label="Add Field"
                         variant="link"
-                        size="xs"
+                        :size="size"
                         color="neutral"
                     />
                 </UDropdownMenu>
@@ -575,7 +579,7 @@ const addArrayItemOptions = computed(() => {
                     <UInput
                         v-if="isEditingKey"
                         v-model="editingKeyValue"
-                        size="xs"
+                        :size="size"
                         autofocus
                         @blur="saveKey"
                         @keydown.enter="saveKey"
@@ -597,12 +601,12 @@ const addArrayItemOptions = computed(() => {
                 <UDropdownMenu
                     :items="[typeOptions]"
                     :disabled="readonly"
-                    size="xs"
+                    :size="size"
                 >
                     <UButton
                         :icon="selectedType?.icon || 'i-lucide-circle-question-mark'"
                         variant="soft"
-                        size="xs"
+                        :size="size"
                         :disabled="readonly"
                     />
                 </UDropdownMenu>
@@ -612,7 +616,7 @@ const addArrayItemOptions = computed(() => {
                     v-if="!readonly"
                     icon="i-lucide-trash"
                     variant="ghost"
-                    size="xs"
+                    :size="size"
                     color="error"
                     @click="emit('remove')"
                 />
@@ -623,6 +627,7 @@ const addArrayItemOptions = computed(() => {
                 v-model="modelValue"
                 :value-type="valueType"
                 :readonly="readonly"
+				:size="size"
                 :field-type="getFieldType(valueType)"
             >
                 <!-- Forward all custom field component slots -->

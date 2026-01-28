@@ -28,9 +28,11 @@ const props = withDefaults(defineProps<{
     /** Whether the field is read-only */
     readonly?: boolean
     /** Optional field type definition for custom component detection */
-    fieldType?: YamlFieldType
+    fieldType?: YamlFieldType,
+	size?: "xl" | "lg" | "md" | "sm" | "xs"
 }>(), {
-    readonly: false
+    readonly: false,
+	size: 'xs'
 })
 
 // Helper: Check if value is a Date object
@@ -97,7 +99,7 @@ const customSlotName = computed(() => {
         <UInput
             v-if="valueType === 'string'"
             :model-value="String(modelValue)"
-            size="xs"
+            :size="size"
             :disabled="readonly"
             placeholder="Enter text..."
             @update:model-value="(val: string) => modelValue = val"
@@ -107,7 +109,7 @@ const customSlotName = computed(() => {
         <UTextarea
             v-else-if="valueType === 'textarea'"
             :model-value="String(modelValue)"
-            size="xs"
+            :size="size"
             :disabled="readonly"
             placeholder="Enter long text..."
             :rows="4"
@@ -119,7 +121,7 @@ const customSlotName = computed(() => {
         <UInputNumber
             v-else-if="valueType === 'number'"
             :model-value="Number(modelValue)"
-            size="xs"
+            :size="size"
             :disabled="readonly"
             placeholder="0"
             @update:model-value="(val: number | null) => modelValue = val ?? 0"
@@ -129,7 +131,7 @@ const customSlotName = computed(() => {
         <USwitch
             v-else-if="valueType === 'boolean'"
             :model-value="Boolean(modelValue)"
-            size="xs"
+            :size="size"
             :disabled="readonly"
             @update:model-value="(val: boolean) => modelValue = val"
         />
@@ -138,7 +140,7 @@ const customSlotName = computed(() => {
         <UInputDate
             v-else-if="valueType === 'date'"
             :model-value="typeof modelValue === 'string' ? stringToCalendarDate(modelValue) : jsDateToCalendarDate(new Date())"
-            size="xs"
+            :size="size"
             :disabled="readonly"
             @update:model-value="(val) => {
                 if (val && 'year' in val) {
@@ -151,7 +153,7 @@ const customSlotName = computed(() => {
         <UInputDate
             v-else-if="valueType === 'datetime'"
             :model-value="typeof modelValue === 'string' ? stringToCalendarDateTime(modelValue) : jsDateToCalendarDateTime(new Date())"
-            size="xs"
+            :size="size"
             :disabled="readonly"
             granularity="second"
             @update:model-value="(val: any) => {
@@ -173,7 +175,7 @@ const customSlotName = computed(() => {
         <UInputTags
             v-else-if="valueType === 'string-array'"
             :model-value="Array.isArray(modelValue) ? modelValue as string[] : []"
-            size="xs"
+            :size="size"
             :disabled="readonly"
             placeholder="Add tags..."
             @update:model-value="(val: string[]) => modelValue = val"
@@ -188,7 +190,7 @@ const customSlotName = computed(() => {
         <UInput
             v-else
             :model-value="String(modelValue || '')"
-            size="xs"
+            :size="size"
             :disabled="readonly"
             placeholder="Enter value..."
             @update:model-value="(val: string) => modelValue = val"

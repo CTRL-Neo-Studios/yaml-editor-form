@@ -28,8 +28,10 @@ const props = withDefaults(defineProps<{
     readonly?: boolean,
     /** Custom field type definitions (merged with defaults) */
     fieldTypes?: YamlFieldType[],
+	size?: "xl" | "lg" | "md" | "sm" | "xs"
 }>(), {
     readonly: false,
+	size: 'xs'
 })
 
 // Initialize field types composable with custom types
@@ -75,6 +77,7 @@ const addFieldOptions = computed(() => {
 					:field-key="String(key)"
 					:readonly="readonly"
 					:field-types="fieldTypes"
+					:size="size"
 					@remove="removeField(String(key))"
 					@update:field-key="(newKey: string) => {
                     if (newKey !== key) {
@@ -93,13 +96,13 @@ const addFieldOptions = computed(() => {
 			<UDropdownMenu
 				v-if="!readonly"
 				:items="[addFieldOptions]"
-				size="sm"
+				:size="size"
 			>
 				<UButton
 					icon="i-lucide-plus"
 					label="Add Field"
 					variant="ghost"
-					size="sm"
+					:size="size"
 				/>
 			</UDropdownMenu>
 		</div>

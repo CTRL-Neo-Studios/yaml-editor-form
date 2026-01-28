@@ -1,13 +1,7 @@
 <script setup lang="ts">
-defineProps({
-    label: {
-        type: String,
-        required: true,
-    },
-    defaultOpen: {
-        type: Boolean,
-        default: false,
-    },
+withDefaults(defineProps<{label: string, defaultOpen?: boolean, size?: "xl" | "lg" | "md" | "sm" | "xs"}>(), {
+	defaultOpen: false,
+	size: 'xs'
 })
 
 const open = defineModel('open', {type: Boolean, default: undefined})
@@ -18,6 +12,7 @@ const open = defineModel('open', {type: Boolean, default: undefined})
         v-model:open="open"
         :default-open="defaultOpen"
         class="group/collapsible"
+		:size="size"
     >
         <div class="flex items-center justify-between gap-2 w-full">
             <div class="flex items-center gap-2">
@@ -28,7 +23,7 @@ const open = defineModel('open', {type: Boolean, default: undefined})
                         class="size-2.5 text-muted transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90"
                     />
                 </div>
-                <span class="text-xs font-medium text-highlighted tracking-tight">{{ label }}</span>
+                <span :class="`text-${size}`" class="font-medium text-highlighted tracking-tight">{{ label }}</span>
                 <slot name="badge"/>
             </div>
 
