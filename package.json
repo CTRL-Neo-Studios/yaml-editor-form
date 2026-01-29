@@ -1,6 +1,6 @@
 {
 	"name": "@type32/yaml-editor-form",
-	"version": "0.1.6",
+	"version": "0.2.0",
 	"description": "YAML Editor Form Component for Nuxt.",
 	"repository": "https://github.com/CTRL-Neo-Studios/yaml-editor-form",
 	"license": "MIT",

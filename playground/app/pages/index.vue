@@ -31,6 +31,23 @@ const customTypes: YamlFieldType[] = [
 	}
 ]
 
+function getYamlData() {
+	return unref(yamlData)
+}
+
+function setYamlData(value: YamlFormData) {
+	yamlData.value = value
+}
+
+const data = computed({
+	get() {
+		return getYamlData()
+	},
+	set(value) {
+		setYamlData(value as YamlFormData)
+	}
+})
+
 // For debugging
 watch(yamlData, (newVal) => {
 	console.log('YAML Data Updated:', newVal)
@@ -56,7 +73,7 @@ watch(yamlData, (newVal) => {
 					</div>
 				</template>
 
-			<YamlFormEditor v-model="yamlData" :field-types="customTypes">
+			<YamlFormEditor v-model="data" :field-types="customTypes">
 				<template #field-color="{ modelValue, readonly, updateModelValue }">
 					<UColorPicker
 						:model-value="modelValue as string"

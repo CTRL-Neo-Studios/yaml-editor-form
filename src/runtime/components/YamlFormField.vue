@@ -267,25 +267,29 @@ function addArrayItem(itemType?: string) {
 
     // If itemType is provided, create item of that type using schema
     if (itemType) {
-        modelValue.value.push(getDefaultValue(itemType))
+        // Create new array to trigger computed setter
+        modelValue.value = [...modelValue.value, getDefaultValue(itemType)] as any
         return
     }
 
     // If array is empty, default to empty object (most common use case)
     if (modelValue.value.length === 0) {
-        modelValue.value.push({})
+        // Create new array to trigger computed setter
+        modelValue.value = [...modelValue.value, {}] as any
         return
     }
 
     // Determine type of new item based on existing items using schema detection
     const firstItem = modelValue.value[0]
     const detectedType = detectFieldType(firstItem)
-    modelValue.value.push(getDefaultValue(detectedType.type))
+    // Create new array to trigger computed setter
+    modelValue.value = [...modelValue.value, getDefaultValue(detectedType.type)] as any
 }
 
 function removeArrayItem(index: number) {
     if (!Array.isArray(modelValue.value)) return
-    modelValue.value.splice(index, 1)
+    // Create new array without the item to trigger computed setter
+    modelValue.value = modelValue.value.filter((_, i) => i !== index) as any
 }
 
 // Add array item from template (using object with most fields as template)
@@ -318,10 +322,12 @@ function addArrayItemFromTemplate() {
             newObject[key] = getDefaultValue(detectedType.type)
         }
 
-        modelValue.value.push(newObject)
+        // Create new array to trigger computed setter
+        modelValue.value = [...modelValue.value, newObject] as any
     } else {
         // Fallback to empty object if no template found
-        modelValue.value.push({})
+        // Create new array to trigger computed setter
+        modelValue.value = [...modelValue.value, {}] as any
     }
 }
 
@@ -344,14 +350,20 @@ function addObjectField(fieldType: string = 'string') {
     const obj = modelValue.value as Record<string, YamlValue>
     const newKey = `field_${Object.keys(obj).length + 1}`
 
-    // Use schema-based default value
-    obj[newKey] = getDefaultValue(fieldType)
+    // Create new object to trigger computed setter
+    modelValue.value = {
+        ...obj,
+        [newKey]: getDefaultValue(fieldType)
+    } as any
 }
 
 function removeObjectField(key: string) {
     if (typeof modelValue.value !== 'object' || Array.isArray(modelValue.value) || !modelValue.value || isDateObject(modelValue.value)) return
     const obj = modelValue.value as Record<string, YamlValue>
-    delete obj[key]
+    
+    // Create new object without the key to trigger computed setter
+    const { [key]: removed, ...rest } = obj
+    modelValue.value = rest as any
 }
 
 // Open state for objects and arrays (true = expanded, false = collapsed)
@@ -497,7 +509,12 @@ const addArrayItemOptions = computed(() => {
                                 :depth="depth + 1"
                                 :field-types="fieldTypes"
                                 @update:model-value="(val: YamlValue) => {
-                                    if (Array.isArray(modelValue)) modelValue[index] = val
+                                    if (Array.isArray(modelValue)) {
+                                        // Create new array to trigger computed setter
+                                        const newArray = [...modelValue]
+                                        newArray[index] = val
+                                        modelValue = newArray as any
+                                    }
                                 }"
                                 @remove="removeArrayItem(index)"
 								:size="size"
@@ -557,15 +574,22 @@ const addArrayItemOptions = computed(() => {
 							:size="size"
                             @update:model-value="(val: YamlValue) => {
                                 if (typeof modelValue === 'object' && !Array.isArray(modelValue) && modelValue !== null && !isDateObject(modelValue)) {
-                                    (modelValue as Record<string, YamlValue>)[key] = val
+                                    // Create new object to trigger computed setter
+                                    modelValue = {
+                                        ...(modelValue as Record<string, YamlValue>),
+                                        [key]: val
+                                    } as any
                                 }
                             }"
                             @remove="removeObjectField(String(key))"
                             @update:field-key="(newKey: string) => {
                                 if (newKey !== key && typeof modelValue === 'object' && !Array.isArray(modelValue) && modelValue !== null && !isDateObject(modelValue) && value !== undefined) {
-                                    const obj = modelValue as Record<string, YamlValue>
-                                    obj[newKey] = value
-                                    delete obj[key]
+                                    // Create new object with renamed key to trigger computed setter
+                                    const { [key]: oldValue, ...rest } = modelValue as Record<string, YamlValue>
+                                    modelValue = {
+                                        ...rest,
+                                        [newKey]: oldValue
+                                    } as any
                                 }
                             }"
                         />

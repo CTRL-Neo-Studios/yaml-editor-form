@@ -1072,20 +1072,20 @@ This function captures the parent's `modelValue` ref and updates it directly, ma
 
 Even if your color field is deeply nested (`data.theme.colors.primary`), the slot works identically because slots are forwarded at every level.
 
-### Type Priority
+### Type Priority & Detection Order
 
-**Detection Order (NEW in v0.2.0):**
+**Detection Order:**
 
-Custom types with `detect` functions are now checked **before** default types:
+Custom types with `detect` functions are **always** checked **before** default types:
 
 1. **Custom types** (checked first) - Your custom types take priority
 2. **Default types** (checked second) - Built-in types as fallback
-3. First matching type wins
+3. **First matching type wins** - Detection stops at first match
 
-This means:
+This ensures:
 - ✅ Your `color` type will be detected before the default `string` type
 - ✅ Custom types override default detection behavior
-- ✅ More specific types should still have more specific detect functions
+- ✅ Custom types appear first in "Add Field" dropdowns
 
 **Example:**
 ```typescript
@@ -1098,6 +1098,48 @@ const customTypes = [{
 
 // Value '#FF0000' will match 'color' before 'string'
 ```
+
+**Important: Make Your Detect Functions Specific!**
+
+Since detection stops at the first match, make sure your `detect` functions are specific enough:
+
+```typescript
+// ❌ TOO BROAD - will match ALL strings
+{
+    type: 'email',
+    baseType: 'string',
+    detect: (v) => typeof v === 'string'  // Too general!
+}
+
+// ✅ SPECIFIC - only matches email-like strings
+{
+    type: 'email',
+    baseType: 'string',
+    detect: (v) => typeof v === 'string' && /^[^@]+@[^@]+\.[^@]+$/.test(v)
+}
+
+// ✅ SPECIFIC - only matches hex colors
+{
+    type: 'color',
+    baseType: 'string',
+    detect: (v) => typeof v === 'string' && /^#[0-9A-Fa-f]{6}$/.test(v)
+}
+
+// ✅ SPECIFIC - only matches URLs
+{
+    type: 'url',
+    baseType: 'string',
+    detect: (v) => typeof v === 'string' && /^https?:\/\//.test(v)
+}
+```
+
+**Troubleshooting Detection Issues:**
+
+If your custom type isn't being detected:
+1. Check that `detect` function is specific enough
+2. Ensure `detect` returns `true` for your value
+3. Remember: first matching type wins (order matters!)
+4. Test your detect function in isolation
 
 **Base Type Conversions:**
 
@@ -1118,22 +1160,57 @@ When using `baseType`, conversion rules follow this logic:
 
 ### Writable Computed Support
 
-The editor is fully compatible with writable computed refs. All mutations create new object references instead of mutating in place:
+**✅ Fully Compatible** - The editor now fully supports writable computed refs through `defineModel` and nested components.
+
+All internal operations use **immutable updates** to ensure computed setters are properly triggered:
 
 ```typescript
-// ✅ Creates new object (triggers computed setter)
-data.value = { ...data.value, newField: 'value' }
+// ✅ All operations create new references (triggers computed setter)
+data.value = { ...data.value, newField: 'value' }           // Add field
+data.value = { ...data.value, [key]: newValue }             // Update field
+const { [key]: removed, ...rest } = data.value              // Remove field
+data.value = rest
 
-// ❌ Direct mutation (doesn't trigger computed setter)
-data.value.newField = 'value'  // Old approach - now fixed!
+// ✅ Array operations also use immutable patterns
+array.value = [...array.value, newItem]                     // Add item
+array.value = array.value.filter((_, i) => i !== index)    // Remove item
+const newArr = [...array.value]; newArr[i] = val            // Update item
+array.value = newArr
+```
+
+**✅ Works Through Multiple Component Layers:**
+
+The editor correctly handles writable computed passed through `defineModel` in nested components:
+
+```vue
+<!-- Parent Component -->
+<script setup lang="ts">
+const rawData = ref({ title: 'Article' })
+
+// Writable computed with validation
+const data = computed({
+    get: () => rawData.value,
+    set: (value) => {
+        console.log('Data updated:', value)
+        // Add validation, transformations, etc.
+        rawData.value = value
+    }
+})
+</script>
+
+<template>
+    <!-- Works! Passes through DataEditorForm → YamlFormEditor -->
+    <DataEditorForm v-model="data" />
+</template>
 ```
 
 **Use Cases for Writable Computed:**
-- Validation before saving
-- Transform data on save (e.g., serialize dates)
-- Sync with external state management (Pinia, Vuex)
-- Trigger side effects on changes (API calls, logging)
-- Implement undo/redo functionality
+- ✅ Validation before saving
+- ✅ Transform data on save (e.g., serialize dates)
+- ✅ Sync with external state management (Pinia, Vuex)
+- ✅ Trigger side effects on changes (API calls, logging)
+- ✅ Implement undo/redo functionality
+- ✅ Complex editor integrations (TipTap, Monaco, etc.)
 
 **Example with Pinia:**
 ```typescript
@@ -1142,6 +1219,20 @@ const store = useMyStore()
 const data = computed({
     get: () => store.formData,
     set: (value) => store.updateFormData(value)
+})
+```
+
+**Example with TipTap Editor Integration:**
+```typescript
+const editorInstance = defineModel('editorInstance', { required: true })
+const $ef = useEditorFrontmatter(editorInstance)
+
+const data = computed({
+    get: () => $ef.getFrontmatter().data || {},
+    set: (newValue) => {
+        // Updates editor content directly
+        $ef.setFrontmatterProperties({ ...newValue })
+    }
 })
 ```
 

@@ -79,11 +79,15 @@ const addFieldOptions = computed(() => {
 				<YamlFormField
 					v-for="(value, key) in data"
 					:key="String(key)"
-					v-model="data[key]"
+					:model-value="data[key]"
 					:field-key="String(key)"
 					:readonly="readonly"
 					:field-types="fieldTypes"
 					:size="size"
+					@update:model-value="(newValue) => {
+						// Create new object to trigger computed setter
+						data = { ...data, [key]: newValue }
+					}"
 					@remove="removeField(String(key))"
 					@update:field-key="(newKey: string) => {
                     if (newKey !== key && data) {
