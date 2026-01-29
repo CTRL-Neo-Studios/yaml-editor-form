@@ -1,76 +1,73 @@
 {
-	"name": "@type32/yaml-editor-form",
-	"version": "0.2.2",
-	"description": "YAML Editor Form Component for Nuxt.",
-	"repository": "https://github.com/CTRL-Neo-Studios/yaml-editor-form",
-	"license": "MIT",
-	"type": "module",
-	"private": false,
-	"exports": {
-		".": {
-			"types": "./dist/types.d.mts",
-			"import": "./dist/module.mjs"
-		}
-	},
-	"main": "./dist/module.mjs",
-	"typesVersions": {
-		"*": {
-			".": [
-				"./dist/types.d.mts"
-			]
-		}
-	},
-	"files": [
-		"dist"
-	],
-	"scripts": {
-		"prepack": "bunx nuxt-module-build build",
-		"dev": "bun run dev:prepare && bunx nuxi dev playground",
-		"dev:build": "bunx nuxi build playground",
-		"dev:prepare": "bunx nuxt-module-build build --stub && bunx nuxt-module-build prepare && bunx nuxi prepare playground",
-		"release": "bun run prepack && bunx changelogen --release && bun publish && git push --follow-tags",
-		"lint": "bunx eslint .",
-		"test": "bunx vitest run",
-		"test:watch": "bunx vitest watch",
-		"test:types": "bunx vue-tsc --noEmit && cd playground && bunx vue-tsc --noEmit"
-	},
-	"dependencies": {
-		"@nuxt/image": "2.0.0",
-		"@nuxt/kit": "^4.2.2",
-		"@nuxt/ui": "^4.4.0",
-		"@tiptap/extension-collaboration": "^3.16.0",
-		"@tiptap/extension-node-range": "^3.16.0",
-		"@tiptap/y-tiptap": "^3.0.1",
-		"js-yaml": "^4.1.1",
-		"tailwindcss": "^4.1.18",
-		"yaml": "^2.8.2",
-		"yjs": "^13.6.29"
-	},
-	"devDependencies": {
-		"@iconify-json/lucide": "^1.2.86",
-		"@iconify-json/simple-icons": "^1.2.67",
-		"@nuxt/devtools": "^3.1.1",
-		"@nuxt/fonts": "0.12.1",
-		"@nuxt/icon": "2.2.1",
-		"@nuxt/module-builder": "^1.0.2",
-		"@nuxt/schema": "^4.2.2",
-		"@nuxt/test-utils": "^3.23.0",
-		"@types/js-yaml": "^4.0.9",
-		"@types/node": "^25.0.10",
-		"changelogen": "^0.6.2",
-		"nuxt": "^4.2.2",
-		"typescript": "~5.9.3",
-		"vitest": "^4.0.17",
-		"vue-tsc": "^3.2.2"
-	},
-	"trustedDependencies": [
-		"@parcel/watcher",
-		"@tailwindcss/oxide",
-		"core-js",
-		"esbuild",
-		"sharp",
-		"unrs-resolver",
-		"vue-demi",
-		"js-yaml"
-	]
+  "name": "@type32/yaml-editor-form",
+  "version": "0.2.2",
+  "description": "YAML Editor Form Component for Nuxt.",
+  "repository": "https://github.com/CTRL-Neo-Studios/yaml-editor-form",
+  "license": "MIT",
+  "type": "module",
+  "private": false,
+  "exports": {
+    ".": {
+      "types": "./dist/types.d.mts",
+      "import": "./dist/module.mjs"
+    }
+  },
+  "main": "./dist/module.mjs",
+  "typesVersions": {
+    "*": {
+      ".": [
+        "./dist/types.d.mts"
+      ]
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "prepack": "bunx nuxt-module-build build",
+    "dev": "bun run dev:prepare && bunx nuxi dev playground",
+    "dev:build": "bunx nuxi build playground",
+    "dev:prepare": "bunx nuxt-module-build build --stub && bunx nuxt-module-build prepare && bunx nuxi prepare playground",
+    "release": "bun run prepack && bunx changelogen --release && bun publish && git push --follow-tags",
+    "lint": "bunx eslint .",
+    "test": "bunx vitest run",
+    "test:watch": "bunx vitest watch",
+    "test:types": "bunx vue-tsc --noEmit && cd playground && bunx vue-tsc --noEmit"
+  },
+  "dependencies": {
+    "@nuxt/image": "2.0.0",
+    "@nuxt/kit": "^4.3.0",
+    "@nuxt/ui": "^4.4.0",
+    "@tailwindcss/vite": "^4.1.18",
+    "@tiptap/extension-collaboration": "^3.18.0",
+    "@tiptap/extension-node-range": "^3.18.0",
+    "@tiptap/y-tiptap": "^3.0.2",
+    "js-yaml": "^4.1.1",
+    "tailwindcss": "^4.1.18",
+    "yaml": "^2.8.2",
+    "yjs": "^13.6.29"
+  },
+  "devDependencies": {
+    "@iconify-json/lucide": "^1.2.87",
+    "@iconify-json/simple-icons": "^1.2.68",
+    "@nuxt/devtools": "^3.1.1",
+    "@nuxt/fonts": "0.13.0",
+    "@nuxt/icon": "2.2.1",
+    "@nuxt/module-builder": "^1.0.2",
+    "@nuxt/schema": "^4.3.0",
+    "@nuxt/test-utils": "^3.23.0",
+    "@types/js-yaml": "^4.0.9",
+    "@types/node": "^25.1.0",
+    "changelogen": "^0.6.2",
+    "nuxt": "^4.3.0",
+    "typescript": "~5.9.3",
+    "vitest": "^4.0.18",
+    "vue-tsc": "^3.2.4"
+  },
+  "trustedDependencies": [
+    "@parcel/watcher",
+    "esbuild",
+    "sharp",
+    "vue-demi"
+  ]
 }

@@ -17,10 +17,13 @@
     "@nuxt/fonts": "0.13.0",
     "@nuxt/image": "2.0.0",
     "@nuxt/ui": "^4.4.0",
+    "@tailwindcss/oxide": "^4.1.18",
+    "@tailwindcss/vite": "^4.1.18",
     "@tiptap/extension-collaboration": "^3.18.0",
     "@tiptap/extension-node-range": "^3.18.0",
     "@tiptap/y-tiptap": "^3.0.2",
     "nuxt": "^4.3.0",
+    "tailwindcss": "^4.1.18",
     "yjs": "^13.6.29"
   },
   "devDependencies": {

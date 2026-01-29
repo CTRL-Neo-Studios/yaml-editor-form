@@ -85,20 +85,21 @@ const addFieldOptions = computed(() => {
 					:field-types="fieldTypes"
 					:size="size"
 					@update:model-value="(newValue) => {
-					// Create new object to trigger computed setter
-					data = { ...data, [key]: newValue }
-				}"
+						// Create new object to trigger computed setter
+						data = { ...data, [key]: newValue }
+					}"
 					@remove="removeField(String(key))"
 					@update:field-key="(newKey: string) => {
-                    if (newKey !== key && data) {
-                        // Create new object with renamed key to trigger computed setter
-                        const { [key]: value, ...rest } = data
-                        data = {
-                            ...rest,
-                            [newKey]: value
-                        }
-                    }
-                }"
+						if (newKey !== key && data) {
+							// Create new object with renamed key to trigger computed setter
+							const { [key]: value, ...rest } = data
+							data = {
+								...rest,
+								[newKey]: value
+							}
+						}
+					}"
+					class="yaml-form-editor-field"
 				>
 					<!-- Forward all slots to YamlFormField for custom field components -->
 					<template v-for="(_, name) in $slots" #[name]="slotProps">

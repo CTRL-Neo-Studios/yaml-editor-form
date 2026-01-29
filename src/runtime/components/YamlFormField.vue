@@ -131,9 +131,9 @@ function isValidConversion(fromType: string, toType: string): boolean {
     // Get base types (required field now)
     const fromFieldType = getFieldType(fromType)
     const toFieldType = getFieldType(toType)
-    
+
     if (!fromFieldType || !toFieldType) return false
-    
+
     const fromBase = fromFieldType.baseType
     const toBase = toFieldType.baseType
 
@@ -161,7 +161,7 @@ function isValidConversion(fromType: string, toType: string): boolean {
 
         // Objects can only convert to null (converting to primitives is useless)
         'object': ['null'],
-        
+
         // Null is always terminal
         'null': []
     }
@@ -360,7 +360,7 @@ function addObjectField(fieldType: string = 'string') {
 function removeObjectField(key: string) {
     if (typeof modelValue.value !== 'object' || Array.isArray(modelValue.value) || !modelValue.value || isDateObject(modelValue.value)) return
     const obj = modelValue.value as Record<string, YamlValue>
-    
+
     // Create new object without the key to trigger computed setter
     const { [key]: removed, ...rest } = obj
     modelValue.value = rest as any
@@ -382,11 +382,6 @@ const itemCount = computed(() => {
         return Object.keys(modelValue.value).length
     }
     return 0
-})
-
-// Indentation based on depth
-const indentClass = computed(() => {
-    return props.depth > 0 ? 'pl-2' : ''
 })
 
 // Type options for dropdown - filtered by valid conversions
@@ -423,7 +418,7 @@ const addArrayItemOptions = computed(() => {
 </script>
 
 <template>
-    <div :class="indentClass" class="space-y-1">
+    <div :class="{'pl-2': props.depth > 0}" class="space-y-1">
         <!-- For Objects and Arrays: Use Collapsible -->
         <template v-if="valueType === 'object' || valueType === 'array'">
             <!-- Edit mode for field key -->
