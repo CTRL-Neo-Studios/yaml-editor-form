@@ -1,6 +1,19 @@
 # Changelog
 
 
+## v0.1.5
+
+[compare changes](https://github.com/CTRL-Neo-Studios/yaml-editor-form/compare/v0.1.4...v0.1.5)
+
+### 🏡 Chore
+
+- **readme:** Updated readme and readme examples ([865ef48](https://github.com/CTRL-Neo-Studios/yaml-editor-form/commit/865ef48))
+- Updated example ([46e5f00](https://github.com/CTRL-Neo-Studios/yaml-editor-form/commit/46e5f00))
+
+### ❤️ Contributors
+
+- Type-32 ([@Type-32](https://github.com/Type-32))
+
 ## v0.1.4
 
 [compare changes](https://github.com/CTRL-Neo-Studios/yaml-editor-form/compare/v0.1.3...v0.1.4)
