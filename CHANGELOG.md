@@ -1,6 +1,19 @@
 # Changelog
 
 
+## v0.2.3
+
+[compare changes](https://github.com/CTRL-Neo-Studios/yaml-editor-form/compare/v0.2.2...v0.2.3)
+
+### 🏡 Chore
+
+- **styles:** Added field styles ([6702749](https://github.com/CTRL-Neo-Studios/yaml-editor-form/commit/6702749))
+- **styles:** Changed field styles and gap ([b87d1c0](https://github.com/CTRL-Neo-Studios/yaml-editor-form/commit/b87d1c0))
+
+### ❤️ Contributors
+
+- Type-32 ([@Type-32](https://github.com/Type-32))
+
 ## v0.2.2
 
 [compare changes](https://github.com/CTRL-Neo-Studios/yaml-editor-form/compare/v0.2.1...v0.2.2)
