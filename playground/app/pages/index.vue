@@ -46,6 +46,7 @@ watch(yamlData, (newVal) => {
 					Test the YAML editor with all field types: strings, numbers, booleans, dates, datetimes, tags, arrays, and objects.
 				</p>
 			</div>
+			<div class="text-xs bg-elevated p-4 rounded-lg overflow-auto">{{ yamlData }}</div>
 
 			<UCard>
 				<template #header>
