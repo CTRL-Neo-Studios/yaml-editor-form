@@ -100,6 +100,35 @@ const data = ref({
 </template>
 ```
 
+### With Writable Computed
+
+The editor fully supports writable computed refs for v-model:
+
+```vue
+<script setup lang="ts">
+const rawData = ref({
+    title: 'Article',
+    published: false
+})
+
+// Writable computed with getter/setter
+const data = computed({
+    get: () => rawData.value,
+    set: (value) => {
+        console.log('Data updated:', value)
+        rawData.value = value
+        // You can add validation, transformations, API calls, etc.
+    }
+})
+</script>
+
+<template>
+    <YamlFormEditor v-model="data" />
+</template>
+```
+
+**Note:** The editor properly triggers computed setters by creating new object references instead of mutating in place, ensuring full compatibility with writable computed refs.
+
 ### With Custom Field Types
 
 ```vue
@@ -1087,12 +1116,42 @@ When using `baseType`, conversion rules follow this logic:
 ]
 ```
 
+### Writable Computed Support
+
+The editor is fully compatible with writable computed refs. All mutations create new object references instead of mutating in place:
+
+```typescript
+// ✅ Creates new object (triggers computed setter)
+data.value = { ...data.value, newField: 'value' }
+
+// ❌ Direct mutation (doesn't trigger computed setter)
+data.value.newField = 'value'  // Old approach - now fixed!
+```
+
+**Use Cases for Writable Computed:**
+- Validation before saving
+- Transform data on save (e.g., serialize dates)
+- Sync with external state management (Pinia, Vuex)
+- Trigger side effects on changes (API calls, logging)
+- Implement undo/redo functionality
+
+**Example with Pinia:**
+```typescript
+const store = useMyStore()
+
+const data = computed({
+    get: () => store.formData,
+    set: (value) => store.updateFormData(value)
+})
+```
+
 ### Performance Considerations
 
 **Reactivity:**
 - Uses Vue 3 `ref` and `computed` for optimal reactivity
 - Deep watching is used only where necessary
 - Recursive rendering is optimized with `v-if` conditionals
+- **Immutable updates** ensure computed setters are triggered properly
 
 **Large Arrays:**
 - Each array item is independently reactive
@@ -1103,6 +1162,7 @@ When using `baseType`, conversion rules follow this logic:
 - Date helper functions are minimal
 - No global state except type registry
 - Components clean up properly on unmount
+- Immutable updates create minimal object copies (spread operator is fast)
 
 ### Validation (Future)
 

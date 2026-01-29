@@ -50,13 +50,19 @@ function addField(fieldType: string = 'string') {
     if (!data.value) data.value = {}
 
     const newKey = `field_${Object.keys(data.value).length + 1}`
-    data.value[newKey] = getDefaultValue(fieldType)
+    // Create new object to trigger computed setter
+    data.value = {
+        ...data.value,
+        [newKey]: getDefaultValue(fieldType)
+    }
 }
 
 // Remove field from root
 function removeField(key: string) {
     if (data.value) {
-        delete data.value[key]
+        // Create new object without the key to trigger computed setter
+        const { [key]: removed, ...rest } = data.value
+        data.value = rest
     }
 }
 
@@ -80,9 +86,13 @@ const addFieldOptions = computed(() => {
 					:size="size"
 					@remove="removeField(String(key))"
 					@update:field-key="(newKey: string) => {
-                    if (newKey !== key) {
-                        data[newKey] = data[key]
-                        delete data[key]
+                    if (newKey !== key && data) {
+                        // Create new object with renamed key to trigger computed setter
+                        const { [key]: value, ...rest } = data
+                        data = {
+                            ...rest,
+                            [newKey]: value
+                        }
                     }
                 }"
 				>
