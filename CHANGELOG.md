@@ -1,6 +1,18 @@
 # Changelog
 
 
+## v0.2.1
+
+[compare changes](https://github.com/CTRL-Neo-Studios/yaml-editor-form/compare/v0.1.6...v0.2.1)
+
+### 🩹 Fixes
+
+- **computed:** Some other writable computed ref funcs and shit ([d891879](https://github.com/CTRL-Neo-Studios/yaml-editor-form/commit/d891879))
+
+### ❤️ Contributors
+
+- Type-32 ([@Type-32](https://github.com/Type-32))
+
 ## v0.1.6
 
 [compare changes](https://github.com/CTRL-Neo-Studios/yaml-editor-form/compare/v0.1.5...v0.1.6)
