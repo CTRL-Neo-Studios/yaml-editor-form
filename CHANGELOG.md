@@ -1,6 +1,18 @@
 # Changelog
 
 
+## v0.2.2
+
+[compare changes](https://github.com/CTRL-Neo-Studios/yaml-editor-form/compare/v0.2.1...v0.2.2)
+
+### 🏡 Chore
+
+- Yaml form editor elements ([109bc53](https://github.com/CTRL-Neo-Studios/yaml-editor-form/commit/109bc53))
+
+### ❤️ Contributors
+
+- Type-32 ([@Type-32](https://github.com/Type-32))
+
 ## v0.2.1
 
 [compare changes](https://github.com/CTRL-Neo-Studios/yaml-editor-form/compare/v0.1.6...v0.2.1)
