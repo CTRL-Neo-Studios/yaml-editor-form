@@ -74,22 +74,21 @@ const addFieldOptions = computed(() => {
 
 <template>
 	<ClientOnly>
-		<div class="space-y-4">
-			<div class="space-y-3">
-				<YamlFormField
-					v-for="(value, key) in data"
-					:key="String(key)"
-					:model-value="data[key]"
-					:field-key="String(key)"
-					:readonly="readonly"
-					:field-types="fieldTypes"
-					:size="size"
-					@update:model-value="(newValue) => {
-						// Create new object to trigger computed setter
-						data = { ...data, [key]: newValue }
-					}"
-					@remove="removeField(String(key))"
-					@update:field-key="(newKey: string) => {
+		<div class="space-y-3">
+			<YamlFormField
+				v-for="(value, key) in data"
+				:key="String(key)"
+				:model-value="data[key]"
+				:field-key="String(key)"
+				:readonly="readonly"
+				:field-types="fieldTypes"
+				:size="size"
+				@update:model-value="(newValue) => {
+					// Create new object to trigger computed setter
+					data = { ...data, [key]: newValue }
+				}"
+				@remove="removeField(String(key))"
+				@update:field-key="(newKey: string) => {
                     if (newKey !== key && data) {
                         // Create new object with renamed key to trigger computed setter
                         const { [key]: value, ...rest } = data
@@ -99,13 +98,12 @@ const addFieldOptions = computed(() => {
                         }
                     }
                 }"
-				>
-					<!-- Forward all slots to YamlFormField for custom field components -->
-					<template v-for="(_, name) in $slots" #[name]="slotProps">
-						<slot :name="name" v-bind="slotProps" />
-					</template>
-				</YamlFormField>
-			</div>
+			>
+				<!-- Forward all slots to YamlFormField for custom field components -->
+				<template v-for="(_, name) in $slots" #[name]="slotProps">
+					<slot :name="name" v-bind="slotProps" />
+				</template>
+			</YamlFormField>
 
 			<UDropdownMenu
 				v-if="!readonly"
