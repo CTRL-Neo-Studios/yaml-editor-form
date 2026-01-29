@@ -112,6 +112,7 @@ const customTypes: YamlFieldType[] = [
         label: 'Image',
         icon: 'i-lucide-image',
         defaultValue: '',
+        baseType: 'string',
         component: 'image'
     }
 ]
@@ -477,6 +478,7 @@ export const DEFAULT_FIELD_TYPES: YamlFieldType[] = [
         label: 'Email',
         icon: 'i-lucide-mail',
         defaultValue: '',
+        baseType: 'string',
         detect: (value) => typeof value === 'string' && /^[^@]+@[^@]+/.test(value)
     }
 ]
@@ -497,6 +499,7 @@ const customTypes: YamlFieldType[] = [
         label: 'URL',
         icon: 'i-lucide-link',
         defaultValue: 'https://',
+        baseType: 'string',
         detect: (value) => typeof value === 'string' && value.startsWith('http')
     }
 ]
@@ -545,6 +548,7 @@ const customTypes: YamlFieldType[] = [
         label: 'Rich Text',
         icon: 'i-lucide-file-text',
         defaultValue: '',
+        baseType: 'string',
         component: 'richtext'  // Now uses custom component
     }
 ]
@@ -693,6 +697,7 @@ const customTypes: YamlFieldType[] = [
         label: 'Image',
         icon: 'i-lucide-image',
         defaultValue: '',
+        baseType: 'string',
         component: 'image'
     },
     {
@@ -700,6 +705,7 @@ const customTypes: YamlFieldType[] = [
         label: 'Markdown',
         icon: 'i-lucide-file-text',
         defaultValue: '',
+        baseType: 'string',
         component: 'markdown'
     }
 ]
@@ -744,13 +750,15 @@ const customTypes: YamlFieldType[] = [
         label: 'UUID',
         icon: 'i-lucide-fingerprint',
         defaultValue: () => crypto.randomUUID(),  // Function called each time
+        baseType: 'string',
         detect: (v) => /^[0-9a-f]{8}-[0-9a-f]{4}-/.test(v)
     },
     {
         type: 'timestamp',
         label: 'Timestamp',
         icon: 'i-lucide-clock',
-        defaultValue: () => new Date().toISOString()
+        defaultValue: () => new Date().toISOString(),
+        baseType: 'string'
     }
 ]
 </script>
@@ -834,6 +842,7 @@ types/
     label: 'My Type',
     icon: 'i-lucide-my-icon',
     defaultValue: 'default',
+    baseType: 'string',  // Required: specify base type for conversions
     detect: (value) => /* detection logic */
 }
 ```
@@ -1168,6 +1177,320 @@ Requires:
 **Peer Dependencies:**
 - reka-ui (via Nuxt UI)
 - tailwindcss (via Nuxt)
+
+## Advanced Examples
+
+### Custom String Array Type
+
+Here's an example of a custom string array type with autocomplete suggestions:
+
+```vue
+<script setup lang="ts">
+import type { YamlFieldType } from '@type32/yaml-editor-form'
+
+const customTypes: YamlFieldType[] = [
+    {
+        type: 'skills',
+        label: 'Skills',
+        icon: 'i-lucide-sparkles',
+        defaultValue: [],
+        baseType: 'string-array',  // Inherits array conversions
+        component: 'skills',
+        detect: (value) => {
+            // Auto-detect arrays with skill-like strings
+            return Array.isArray(value) && 
+                   value.length > 0 && 
+                   value.every(v => typeof v === 'string' && v.length < 30)
+        }
+    }
+]
+
+const profile = ref({
+    name: 'John Doe',
+    skills: ['Vue.js', 'TypeScript', 'Nuxt']
+})
+
+// Predefined skill suggestions
+const skillSuggestions = [
+    'Vue.js', 'React', 'Angular', 'TypeScript', 'JavaScript',
+    'Node.js', 'Python', 'Nuxt', 'Next.js', 'Tailwind CSS'
+]
+</script>
+
+<template>
+    <YamlFormEditor v-model="profile" :field-types="customTypes">
+        <!-- Custom skills input with autocomplete -->
+        <template #field-skills="{ modelValue, readonly, updateModelValue }">
+            <div class="space-y-2">
+                <!-- Display current skills as badges -->
+                <div class="flex flex-wrap gap-2">
+                    <UBadge
+                        v-for="(skill, index) in (modelValue as string[])"
+                        :key="index"
+                        color="primary"
+                        variant="soft"
+                    >
+                        {{ skill }}
+                        <UButton
+                            v-if="!readonly"
+                            icon="i-lucide-x"
+                            size="2xs"
+                            variant="ghost"
+                            :padded="false"
+                            @click="updateModelValue((modelValue as string[]).filter((_, i) => i !== index))"
+                        />
+                    </UBadge>
+                </div>
+                
+                <!-- Add new skill with autocomplete -->
+                <UInputMenu
+                    v-if="!readonly"
+                    :options="skillSuggestions"
+                    placeholder="Add skill..."
+                    @update:model-value="(newSkill: string) => {
+                        if (newSkill && !(modelValue as string[]).includes(newSkill)) {
+                            updateModelValue([...(modelValue as string[]), newSkill])
+                        }
+                    }"
+                />
+            </div>
+        </template>
+    </YamlFormEditor>
+</template>
+```
+
+### Custom Object Array Type
+
+Here's an example of a custom object array type with card-based rendering:
+
+```vue
+<script setup lang="ts">
+import type { YamlFieldType } from '@type32/yaml-editor-form'
+
+const customTypes: YamlFieldType[] = [
+    {
+        type: 'contacts',
+        label: 'Contacts',
+        icon: 'i-lucide-users',
+        defaultValue: [],
+        baseType: 'array',  // Inherits array conversions
+        component: 'contacts',
+        detect: (value) => {
+            // Auto-detect arrays of contact-like objects
+            return Array.isArray(value) && 
+                   value.length > 0 &&
+                   value.every(v => 
+                       v && typeof v === 'object' && 
+                       ('name' in v || 'email' in v)
+                   )
+        }
+    }
+]
+
+const data = ref({
+    projectName: 'My Project',
+    contacts: [
+        { name: 'Alice Johnson', email: 'alice@example.com', role: 'Designer' },
+        { name: 'Bob Smith', email: 'bob@example.com', role: 'Developer' }
+    ]
+})
+</script>
+
+<template>
+    <YamlFormEditor v-model="data" :field-types="customTypes">
+        <!-- Custom contacts list with card UI -->
+        <template #field-contacts="{ modelValue, readonly, updateModelValue }">
+            <div class="space-y-3">
+                <!-- Contact cards -->
+                <UCard
+                    v-for="(contact, index) in (modelValue as any[])"
+                    :key="index"
+                    :ui="{ body: { padding: 'p-4' } }"
+                >
+                    <div class="flex items-start justify-between gap-3">
+                        <div class="flex-1 space-y-2">
+                            <!-- Name -->
+                            <UInput
+                                :model-value="contact.name"
+                                placeholder="Name"
+                                :disabled="readonly"
+                                @update:model-value="(val: string) => {
+                                    const updated = [...(modelValue as any[])]
+                                    updated[index] = { ...contact, name: val }
+                                    updateModelValue(updated)
+                                }"
+                            />
+                            
+                            <!-- Email -->
+                            <UInput
+                                :model-value="contact.email"
+                                type="email"
+                                placeholder="Email"
+                                icon="i-lucide-mail"
+                                :disabled="readonly"
+                                @update:model-value="(val: string) => {
+                                    const updated = [...(modelValue as any[])]
+                                    updated[index] = { ...contact, email: val }
+                                    updateModelValue(updated)
+                                }"
+                            />
+                            
+                            <!-- Role -->
+                            <UInput
+                                :model-value="contact.role"
+                                placeholder="Role"
+                                icon="i-lucide-briefcase"
+                                :disabled="readonly"
+                                @update:model-value="(val: string) => {
+                                    const updated = [...(modelValue as any[])]
+                                    updated[index] = { ...contact, role: val }
+                                    updateModelValue(updated)
+                                }"
+                            />
+                        </div>
+                        
+                        <!-- Remove button -->
+                        <UButton
+                            v-if="!readonly"
+                            icon="i-lucide-trash-2"
+                            color="red"
+                            variant="ghost"
+                            size="sm"
+                            @click="updateModelValue((modelValue as any[]).filter((_, i) => i !== index))"
+                        />
+                    </div>
+                </UCard>
+                
+                <!-- Add contact button -->
+                <UButton
+                    v-if="!readonly"
+                    icon="i-lucide-plus"
+                    label="Add Contact"
+                    variant="outline"
+                    block
+                    @click="updateModelValue([
+                        ...(modelValue as any[]),
+                        { name: '', email: '', role: '' }
+                    ])"
+                />
+            </div>
+        </template>
+    </YamlFormEditor>
+</template>
+```
+
+### Combined Example
+
+You can use both custom array types together:
+
+```vue
+<script setup lang="ts">
+import type { YamlFieldType } from '@type32/yaml-editor-form'
+
+const customTypes: YamlFieldType[] = [
+    // Custom string array
+    {
+        type: 'tags',
+        label: 'Tags',
+        icon: 'i-lucide-tag',
+        defaultValue: [],
+        baseType: 'string-array',
+        component: 'tags',
+        detect: (v) => Array.isArray(v) && v.every(i => typeof i === 'string')
+    },
+    // Custom object array
+    {
+        type: 'team',
+        label: 'Team Members',
+        icon: 'i-lucide-users',
+        defaultValue: [],
+        baseType: 'array',
+        component: 'team',
+        detect: (v) => Array.isArray(v) && v.every(i => i?.name || i?.email)
+    }
+]
+
+const project = ref({
+    name: 'Website Redesign',
+    tags: ['frontend', 'design', 'urgent'],
+    team: [
+        { name: 'Alice', email: 'alice@example.com' },
+        { name: 'Bob', email: 'bob@example.com' }
+    ]
+})
+</script>
+
+<template>
+    <YamlFormEditor v-model="project" :field-types="customTypes">
+        <!-- String array implementation -->
+        <template #field-tags="{ modelValue, readonly, updateModelValue }">
+            <UInputTags
+                :model-value="modelValue as string[]"
+                :disabled="readonly"
+                placeholder="Add tags..."
+                @update:model-value="updateModelValue"
+            />
+        </template>
+        
+        <!-- Object array implementation -->
+        <template #field-team="{ modelValue, readonly, updateModelValue }">
+            <!-- Your custom team member UI here -->
+            <div class="space-y-2">
+                <div
+                    v-for="(member, idx) in (modelValue as any[])"
+                    :key="idx"
+                    class="flex gap-2"
+                >
+                    <UInput
+                        :model-value="member.name"
+                        placeholder="Name"
+                        :disabled="readonly"
+                        @update:model-value="(val: string) => {
+                            const updated = [...(modelValue as any[])]
+                            updated[idx] = { ...member, name: val }
+                            updateModelValue(updated)
+                        }"
+                    />
+                    <UButton
+                        v-if="!readonly"
+                        icon="i-lucide-x"
+                        color="red"
+                        variant="ghost"
+                        @click="updateModelValue((modelValue as any[]).filter((_, i) => i !== idx))"
+                    />
+                </div>
+                <UButton
+                    v-if="!readonly"
+                    icon="i-lucide-plus"
+                    label="Add Member"
+                    size="sm"
+                    @click="updateModelValue([...(modelValue as any[]), { name: '', email: '' }])"
+                />
+            </div>
+        </template>
+    </YamlFormEditor>
+</template>
+```
+
+### Key Patterns for Array Types
+
+**String Arrays (`baseType: 'string-array'`):**
+- Use for specialized tag inputs, category lists, etc.
+- Can convert to/from regular arrays and strings
+- Good for: skills, tags, categories, keywords
+
+**Object Arrays (`baseType: 'array'`):**
+- Use for collections with structured data
+- Provide custom UI for adding/editing/removing items
+- Good for: contacts, team members, products, events
+
+**Important Notes:**
+1. **Type Assertions**: Use `(modelValue as string[])` or `(modelValue as any[])` for type safety
+2. **Immutability**: Always create new arrays when updating (spread operator `[...]`)
+3. **Index Management**: Track items by index for updates/deletions
+4. **Add Operations**: Spread existing array and add new items
+5. **Remove Operations**: Use `filter()` to remove by index
+6. **Update Operations**: Clone array, modify specific index, update entire array
 
 ## License
 
