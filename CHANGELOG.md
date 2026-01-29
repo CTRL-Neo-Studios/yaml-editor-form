@@ -1,6 +1,18 @@
 # Changelog
 
 
+## v0.1.6
+
+[compare changes](https://github.com/CTRL-Neo-Studios/yaml-editor-form/compare/v0.1.5...v0.1.6)
+
+### 🩹 Fixes
+
+- **computed:** Fixed writable computed refs can't be passed in as model value ([7a21f68](https://github.com/CTRL-Neo-Studios/yaml-editor-form/commit/7a21f68))
+
+### ❤️ Contributors
+
+- Type-32 ([@Type-32](https://github.com/Type-32))
+
 ## v0.1.5
 
 [compare changes](https://github.com/CTRL-Neo-Studios/yaml-editor-form/compare/v0.1.4...v0.1.5)
