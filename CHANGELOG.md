@@ -1,6 +1,18 @@
 # Changelog
 
 
+## v0.2.4
+
+[compare changes](https://github.com/CTRL-Neo-Studios/yaml-editor-form/compare/v0.2.3...v0.2.4)
+
+### 🏡 Chore
+
+- Update deps ([a4a8a74](https://github.com/CTRL-Neo-Studios/yaml-editor-form/commit/a4a8a74))
+
+### ❤️ Contributors
+
+- Type-32 ([@Type-32](https://github.com/Type-32))
+
 ## v0.2.3
 
 [compare changes](https://github.com/CTRL-Neo-Studios/yaml-editor-form/compare/v0.2.2...v0.2.3)
